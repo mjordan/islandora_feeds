@@ -81,7 +81,7 @@ function islandora_feeds_derivs_admin_settings() {
     '#type' => 'checkbox',
     '#title' => t('Replace the OBJ datastream with the derivative'),
     '#default_value' => variable_get('islandora_feeds_derivs_replace_obj', 0),
-    '#description' => t('UNDER DEVELOPMENT. DOES NOT WORK YET.'),
+    '#description' => t('UNDER DEVELOPMENT. DO NOT USE!.'),
   );
 
   $target_collections = $collections;
@@ -182,7 +182,7 @@ function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = TRUE,
       $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
       
       $xml_doc = new DOMDocument();
-      $xml_doc->loadXML($object['OBJ']->getContent());
+      $xml_doc->loadXML($object['OBJ']->content);
       $xslt_proc = new XSLTProcessor();
       $xslt_proc->importStylesheet($xsl_doc);
       $ds_xml = $xslt_proc->transformToXML($xml_doc);
@@ -334,23 +334,44 @@ function islandora_feeds_derivs_purge_obj(AbstractObject $object, $force = FALSE
  */
 function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FALSE, $hook = array()) {
   $stylesheet = variable_get('islandora_feeds_derivs_stylesheet', '');
-  if (variable_get('islandora_feeds_derivs_replace_obj', 0) && isset($object['OBJ']) && count($stylesheet) == 1) {
+  try {
+    // Get the derivative DSID from the stylesheet used to create it,
+    // which is the current stylesheet.
+    $stylesheet_keys = array_keys($stylesheet);
+    $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
+    $path_to_xsl =  $module_dir . '/xml/' . $stylesheet_keys[0];
+    $xsl_doc = new DOMDocument();
+    $xsl_doc->load($path_to_xsl);
+    $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
+  }
+  catch (exception $e) {
+    $success = array(
+      'success' => FALSE,
+      'messages' => array(
+        array(
+          'message' => t('Failed to get stylesheet parameters required to replace OBJ datastream.'),
+          'type' => 'watchdog',
+          'severity' => WATCHDOG_ERROR,
+        ),
+      ),
+    );
+  }
+  if (count($stylesheet) == 1 && variable_get('islandora_feeds_derivs_replace_obj', 0) &&
+    !in_array($object->id, $_SESSION['islandora_feeds_derivs_replaced_obj']) &&
+    isset($object['OBJ']) && isset($object[$xsl_parameters['DSID']])) {
     try {
-      // First, get the derivative DSID from the stylesheet used to create it,
-      // which is the current stylesheet.
-      $stylesheet_keys = array_keys($stylesheet);
-      $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
-      $path_to_xsl =  $module_dir . '/xml/' . $stylesheet_keys[0];
-      $xsl_doc = new DOMDocument();
-      $xsl_doc->load($path_to_xsl);
-      $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
-      // Then, replace the contents of OBJ with the content of the derivative.
+      // Replace the contents of OBJ with the content of the derivative.
       $new_dsid = $xsl_parameters['DSID'];
       $new_ds = islandora_datastream_load($new_dsid, $object);
-      $new_ds_content = $new_ds->getContent();
-      $object['OBJ']->setContentFromString($new_ds_content);
-      // Finally, delete the derivative.
+      // This is the problem - for some reason trying to setContentFromString puts
+      // the batch into a long-running loop and FC consumes almost all the available
+      // CPU. Maybe a locking issue on Fedora's end?
+      $object['OBJ']->setContentFromString($new_ds->content);
+      // Delete the derivative.
       $object->purgeDatastream($new_dsid);
+      // Record that we've completed the operation for the current object
+      // during this import job.
+      $_SESSION['islandora_feeds_derivs_replaced_obj'][] = $object->id;
       return array(
         'success' => TRUE,
         'messages' => array(

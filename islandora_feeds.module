@@ -92,6 +92,17 @@ function islandora_feeds_feeds_plugins() {
 }
 
 /**
+ * Implements hook_feeds_before_import().
+ *
+ * Reinitialize the array that keeps track of which Islandora objects (by
+ * PID) we have performed the islandora_feeds_derivs_replace_obj function
+ * (in islandora_feeds_derivs.module) on during the current import.
+ */
+function islandora_feeds_feeds_before_import(FeedsSource $source) {
+  $_SESSION['islandora_feeds_derivs_replaced_obj'] = array();
+}
+
+/**
  * Implements hook_theme().
  */
 function islandora_feeds_theme($existing, $type, $theme, $path) {
