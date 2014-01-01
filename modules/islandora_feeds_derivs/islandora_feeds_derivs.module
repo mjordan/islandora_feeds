@@ -350,6 +350,7 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
     $xsl_doc = new DOMDocument();
     $xsl_doc->load($path_to_xsl);
     $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
+    unset($xsl_doc);
   }
   catch (exception $e) {
     $success = array(

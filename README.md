@@ -148,6 +148,7 @@ Generating "other datastreams" means you can import CSV data and turn it into MO
 
 * Provide tutorial on building CRUD forms using the XML Forms Builder.
 * Provide more realistic example CSV files (and resulting datastreams).
+* Provide cookbook recipes documenting various options provided by the Derivs module.
 * Improve and generalize the theming of the XML when ingested and viewed.
 * Close the issues in the GitHub repo's queue!
 
