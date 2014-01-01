@@ -81,7 +81,12 @@ function islandora_feeds_derivs_admin_settings() {
     '#type' => 'checkbox',
     '#title' => t('Replace the OBJ datastream with the derivative'),
     '#default_value' => variable_get('islandora_feeds_derivs_replace_obj', 0),
-    '#description' => t('UNDER DEVELOPMENT. DO NOT USE!.'),
+    '#description' => t("Check this option if you want to replace the content of the OBJ
+      datastream with the content of the derivative being created. Only applies when
+      one stylesheet is selected. Note that the original OBJ's version history is lost.
+      Also note that you will need to override the theming for the display of the new
+      OBJ content (specifically, theme('islandora_feeds_item_display',
+      array('islandora_object' => \$object))). Only works when one stylesheet is selected."),
   );
 
   $target_collections = $collections;
@@ -226,10 +231,12 @@ function islandora_feeds_derivs_add_datastream(AbstractObject $object, $params, 
     if ($ingest) {
       $ds = $object->constructDatastream($params['DSID'], 'M');
       $ds->label = $params['DSLABEL'];
+      $ds->mimetype = 'text/xml';
     }
     else {
       $ds = $object[$params['DSID']];
       $ds->label = $params['DSLABEL'];
+      $ds->mimetype = 'text/xml';
     }
     $ds->setContentFromString($xml_string);
     if ($ingest) {
@@ -361,17 +368,29 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
     isset($object['OBJ']) && isset($object[$xsl_parameters['DSID']])) {
     try {
       // Replace the contents of OBJ with the content of the derivative.
-      $new_dsid = $xsl_parameters['DSID'];
-      $new_ds = islandora_datastream_load($new_dsid, $object);
-      // This is the problem - for some reason trying to setContentFromString puts
-      // the batch into a long-running loop and FC consumes almost all the available
-      // CPU. Maybe a locking issue on Fedora's end?
-      $object['OBJ']->setContentFromString($new_ds->content);
+      $derivative_dsid = $xsl_parameters['DSID'];
+      $derivative_ds = islandora_datastream_load($derivative_dsid, $object);
+
+      // Delete the OBJ datastream.
+      $object->purgeDatastream('OBJ');
+
+      // Ingest the new OBJ datastream.
+      $new_obj_ds = $object->constructDatastream('OBJ', 'M');
+      $new_obj_ds->label = 'Field data';
+      $new_obj_ds->mimetype = 'text/xml';
+      $new_obj_ds->setContentFromString($derivative_ds->content);
+      $object->ingestDatastream($new_obj_ds);
+
       // Delete the derivative.
-      $object->purgeDatastream($new_dsid);
-      // Record that we've completed the operation for the current object
-      // during this import job.
+      $object->purgeDatastream($derivative_dsid);
+
+      // Not sure why, but if we don't register the fact that we have
+      // already processed this object, the Feeds batch goes into a
+      // loop and attempts to perform this action multiple times. This
+      // session variable is reset in islandora_feeds.module at the start
+      // of each Feeds import.
       $_SESSION['islandora_feeds_derivs_replaced_obj'][] = $object->id;
+
       return array(
         'success' => TRUE,
         'messages' => array(
@@ -379,7 +398,7 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
             'message' => t('Replaced OBJ datastream for @pid with content from @ds.'),
             'message_sub' => array(
               '@pid' => $object->id,
-              '@ds' => $new_dsid,
+              '@ds' => $derivative_dsid,
             ),
             'type' => 'dsm',
           ),
