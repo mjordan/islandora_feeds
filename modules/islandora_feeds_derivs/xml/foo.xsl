@@ -7,9 +7,11 @@
   <xsl:param name="DSLABEL">FOO record</xsl:param>
 
   <xsl:template match="/">
+        <foo>
 	<!-- The title is the only element we grab from the OBJ. -->
-	<title><xsl:value-of select="fielddata/title"/></title>
-        <someelement>Some value</someelement>
+	<title label = "Title"><xsl:value-of select="fielddata/title"/></title>
+        <someOtherElement label = "Some other element">Some value</someOtherElement>
+        </foo>
   </xsl:template>
 </xsl:stylesheet>
 
