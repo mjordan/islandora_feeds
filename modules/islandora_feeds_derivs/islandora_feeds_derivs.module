@@ -116,6 +116,24 @@ function islandora_feeds_derivs_admin_settings() {
 }
 
 /**
+ * Validation callback for the admin settings form.
+ */
+function islandora_feeds_derivs_admin_settings_validate($form, &$form_state) {
+  if ($form_state['values']['islandora_feeds_derivs_replace_obj']) {
+    if (count($form_state['values']['islandora_feeds_derivs_stylesheet']) > 1) {
+      form_set_error('islandora_feeds_derivs_replace_obj',
+        t("You can't choose the 'Replace the OBJ datastream with the derivative' option
+          if you have selected more than one stylesheet. Please select only one stylesheet."));
+    }
+    if ($form_state['values']['islandora_feeds_derivs_delete_obj']) {
+      form_set_error('islandora_feeds_derivs_replace_obj',
+        t("You can't choose the 'Replace the OBJ datastream with the derivative' option
+          if you have selected 'Delete the OBJ datastream'. Please uncheck 'Delete the OBJ datastream'."));
+    }
+  }
+}
+
+/**
  * Implement hook_cmodel_pid_islandora_derivative().
  */
 function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(AbstractObject $object = NULL) {
