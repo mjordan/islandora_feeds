@@ -1,0 +1,10 @@
+name = Islandora Feeds
+description = "Proof of concept module using Feeds to import Islandora objects."
+dependencies[] = islandora
+dependencies[] = feeds
+package = Islandora Tools
+version = 7.x-dev
+core = 7.x
+php = 5.3
+configure = admin/islandora/premis
+stylesheets[all][] = css/islandora_premis.css

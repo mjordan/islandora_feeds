@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Module to create Islandora objects using the Feeds contrib module.
+ */
+
+/**
+ * Implements hook_feeds_plugins().
+ */
+function islandora_feeds_feeds_plugins() {
+  $info = array();
+  $info['IslandoraFeedsFeedsNodeProcessor'] = array(
+    'name' => 'Islandora Feeds node processor',
+    'description' => 'Creates Islandora objects. Corresponding nodes are not created.',
+    'handler' => array(
+      'parent' => 'FeedsProcessor',
+      'class' => 'IslandoraFeedsFeedsNodeProcessor',
+      'file' => 'IslandoraFeedsFeedsNodeProcessor.inc',
+      'path' => drupal_get_path('module', 'islandora_feeds'),
+    ),
+  );
+  return $info;
+}

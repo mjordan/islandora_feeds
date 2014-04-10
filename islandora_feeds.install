@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the islandora_feeds module.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function islandora_feeds_enable() {
+  cache_clear_all('plugins:feeds:plugins', 'cache');
+}
