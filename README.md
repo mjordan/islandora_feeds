@@ -28,6 +28,10 @@ You should map one of the fields in your source to Title in your target. The onl
 
 Once you have configured the importer, you're ready to import your source conent. 
 
+## To do
+
+* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora 
+
 ## Troubleshooting/issues/feedback
 
 Use cases are welcome. The goal of this module is to leverage as much of Feeds' built-in functionality as possible while providing the ability to load a wide range of Islandora content types as possible. If you have any questions or comments, please post them to:
