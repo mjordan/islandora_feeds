@@ -128,6 +128,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
     // Islandora objects don't have bodies.
     unset($form['input_format']);
 
+    module_load_include('inc', 'islandora_feeds', 'includes/utilities');
     $collections = islandora_feeds_get_collections_or_content_models('collections');
     $form['collection'] = array(
       '#type' => 'select',
@@ -361,6 +362,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $cmodel = $processor_config['cmodel'];
   $collection = $processor_config['collection'];
 
+  module_load_include('inc', 'islandora_feeds', 'includes/utilities');
   $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
   $tuque = new IslandoraTuque();
   $repository = $tuque->repository;
@@ -383,16 +385,3 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   }
 }
 
-function islandora_feeds_create_xml_datastream($item, $entity) {
-  $xml = new XMLWriter();
-  $xml->openMemory();
-  $xml->setIndent(TRUE);
-  $xml->startDocument('1.0', 'utf-8', NULL);
-  $xml->startElement('custom');
-  foreach ($item as $field => $value) {
-    $clean_field = str_replace(' ', '_', $field);
-    $xml->writeElement($clean_field, $value);
-  }
-  $xml->endElement();
-  return $xml->outputMemory();
-}
