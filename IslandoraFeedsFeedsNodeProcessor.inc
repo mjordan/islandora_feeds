@@ -106,6 +106,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
     return array(
       'collection' => 'islandora:root',
       'cmodel' => 'fedora-system:ContentModel-3.0',
+      'namespace' => 'islandora',
       'keepnodes' => FALSE,
       'expire' => FEEDS_EXPIRE_NEVER,
       'author' => 0,
@@ -144,6 +145,14 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#options' => $cmodels,
       '#description' => t("The Islandora content model you want to import into."),
       '#default_value' => $this->config['cmodel'],
+      '#required' => TRUE,
+    );
+
+    $form['namespace'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Namespace'),
+      '#description' => t('The PID namespace to use for the imported objects.'),
+      '#default_value' => $this->config['namespace'],
       '#required' => TRUE,
     );
 
@@ -349,7 +358,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
 
   $tuque = new IslandoraTuque();
   $repository = $tuque->repository;
-  $fedora_object = $repository->constructObject('default');
+  $fedora_object = $repository->constructObject($processor_config['namespace']);
   $fedora_object->label = $entity->title;
   $datastream = $fedora_object->constructDatastream($processor_config['dsid'], 'X');
   $datastream->label = $processor_config['dslabel'];
