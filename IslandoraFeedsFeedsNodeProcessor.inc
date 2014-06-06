@@ -352,21 +352,27 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
  * Implements hook_feeds_after_save().
  */
 function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
-  $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
+  // Get feeds config options.
   $config = $source->importer->getConfig();
   $processor_config = $config['processor']['config'];
+  $namespace = $processor_config['namespace'];
+  $dsid = $processor_config['dsid'];
+  $ds_label = $processor_config['dslabel'];
+  $cmodel = $processor_config['cmodel'];
+  $collection = $processor_config['collection'];
 
+  $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
   $tuque = new IslandoraTuque();
   $repository = $tuque->repository;
-  $fedora_object = $repository->constructObject($processor_config['namespace']);
+  $fedora_object = $repository->constructObject($namespace);
   $fedora_object->label = $entity->title;
-  $datastream = $fedora_object->constructDatastream($processor_config['dsid'], 'X');
-  $datastream->label = $processor_config['dslabel'];
+  $datastream = $fedora_object->constructDatastream($dsid, 'X');
+  $datastream->label = $ds_label;
   $datastream->mimetype = 'text/xml';
   $datastream->setContentFromString($xml_ds);
   $fedora_object->ingestDatastream($datastream);
-  $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $processor_config['cmodel']);
-  $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $processor_config['collection']);
+  $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
+  $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
   $repository->ingestObject($fedora_object);
 
   if ($processor_config['keepnodes']) {

@@ -24,6 +24,26 @@ function islandora_feeds_feeds_plugins() {
 }
 
 /**
+ * Implements hook_action_info().
+ *
+ * @todo: This action ingests Islandora objects at a point later
+ * in time than the Feed import, so we need to store the target
+ * collection and content model. Do we require the user to create
+ * fields with a specific name in their template content type?
+ */
+function islandora_feeds_action_info() {
+  return array(
+    'islandora_feeds_create_islandora_objects' => array(
+      'type' => 'node',
+      'label' => t('Create Islandora objects from nodes'),
+      'configurable' => TRUE,
+      'behavior' => array('changes_property'),
+      'triggers' => array('node_presave', 'node_insert', 'node_update'),
+    ),
+  );
+}
+
+/**
  * Query the resource index to get a list of collections or content
  * models.
  *
