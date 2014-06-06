@@ -14,7 +14,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Usage
 
-This module provides a Feeds processor that creates Islandora objects. Currently, the only datastream that is created is an XML file that contains elements mirroring the column headings in the CSV file (or equivalent in other input formats) you are loading using Feeds, with element values that correspond to the values in the columns.
+This module provides a Feeds processor that creates Islandora objects. Currently, the only datastream that is created is an XML file that contains elements mirroring the column headings in the CSV file (or equivalent in other input formats) you are loading using Feeds, with element values that correspond to the values in the columns. Also, this module only imports data, it doesn't provide any way to view the imported data (other than by using Islandora's links to the imported datastream in the object's "Datastreams" tab.
 
 The Processor provided by this module is similar to other Feeds processors. It uses a version of Feeds' Node processor to create a node for each item you are importing. Each node then serves as the source of the Islandora object that is created. You have the option of saving these nodes (for quality assurance) or deleting them immediately after the Islandora object is created.
 
