@@ -1,0 +1,11 @@
+<dsCompositeModel xmlns="info:fedora/fedora-system:def/dsCompositeModel#">
+    <dsTypeModel ID="TN" optional="true">
+        <form MIME="image/jpg"/>
+        <form MIME="image/jpeg"/>
+        <form MIME="image/png"/>
+    </dsTypeModel>
+    <dsTypeModel ID="OBJ" optional="true"/>
+    <dsTypeModel ID="MODS" optional="true">
+        <form FORMAT_URI="http://www.loc.gov/mods/v3" MIME="text/xml"/>
+    </dsTypeModel>
+</dsCompositeModel>
