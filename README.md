@@ -31,6 +31,9 @@ Once you have configured the importer, you're ready to import your source conent
 ## To do
 
 * Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora 
+* Filter out content models in the config settings form that don't make sense.
+* Figure out how to import handle thumbnails and additional datastreams.
+* Figure out how to support deleting content loaded via this module.
 
 ## Troubleshooting/issues/feedback
 
