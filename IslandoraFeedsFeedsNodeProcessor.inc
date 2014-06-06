@@ -363,19 +363,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $collection = $processor_config['collection'];
 
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
-  $tuque = new IslandoraTuque();
-  $repository = $tuque->repository;
-  $fedora_object = $repository->constructObject($namespace);
-  $fedora_object->label = $entity->title;
-  $datastream = $fedora_object->constructDatastream($dsid, 'X');
-  $datastream->label = $ds_label;
-  $datastream->mimetype = 'text/xml';
-  $datastream->setContentFromString($xml_ds);
-  $fedora_object->ingestDatastream($datastream);
-  $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
-  $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
-  $repository->ingestObject($fedora_object);
+  islandora_feeds_ingest_object($entity, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
 
   if ($processor_config['keepnodes']) {
     drupal_set_message(t('Nodes have been kept.'), 'status', FALSE);

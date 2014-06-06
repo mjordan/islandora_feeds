@@ -49,3 +49,45 @@ function islandora_feeds_create_xml_datastream($item, $entity) {
   return $xml->outputMemory();
 }
 
+/**
+ * Ingest an Islandora object. @todo: Can we resuse an existing function
+ *  to do this?
+ *
+ * @param object $entity
+ *   The entity as it is passed into islandora_feeds_feeds_after_save().
+ * @param string $namespace
+ *   The Fedora namespace to use for this object.
+ * @param string $dsid
+ *   The datastream ID to use,
+ * @param string $ds_label
+ *   The datastream label to use,
+ * @param string $xml_ds
+ *   The serialized XML datastream to add to the object.
+ * @param string $cmodel
+ *   The content model to use.
+ * @param string $collection
+ *   The collection to add the object to.
+ * @return bool
+ *    TRUE if the object was successfuly ingested, FALSE if not.
+ */
+function islandora_feeds_ingest_object($entity, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection) {
+  // @todo: Add more granular error catching.
+  try {
+    $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
+    $tuque = new IslandoraTuque();
+    $repository = $tuque->repository;
+    $fedora_object = $repository->constructObject($namespace);
+    $fedora_object->label = $entity->title;
+    $datastream = $fedora_object->constructDatastream($dsid, 'X');
+    $datastream->label = $ds_label;
+    $datastream->mimetype = 'text/xml';
+    $datastream->setContentFromString($xml_ds);
+    $fedora_object->ingestDatastream($datastream);
+    $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
+    $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
+    $repository->ingestObject($fedora_object);
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('Error ingesting Islandora object corresponding to node %n (title: %t): %m', array('%n' => $entity->nid, '%t' => $entity->title, '%m' => $e->getMessage())), 'error', FALSE);
+  }
+}
