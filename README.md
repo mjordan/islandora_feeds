@@ -6,7 +6,7 @@ This module allows users to create Islandora objects using the Feeds contrib mod
 
 ## Requirements
 
-Feeds
+[Feeds](https://drupal.org/project/feeds)
 
 ## Installation
 
