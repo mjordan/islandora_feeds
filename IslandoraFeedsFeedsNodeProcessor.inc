@@ -6,8 +6,7 @@
  * not created for Islandora objects created by this processor.
  * 
  * @todo:
-     -Add option to delete each node after the Fedora object has been created.
-     -Add config option to select collection and content model.
+     -Filter out content models in the config settings form that don't make sense.
  *   -Figure out how to handle thumbnails.
  *   -Figure out how to support deleting content loaded via this module.
  *   -Figure out object validation.
@@ -105,6 +104,9 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    */
   public function configDefaults() {
     return array(
+      'collection' => 'islandora:root',
+      'cmodel' => 'fedora-system:ContentModel-3.0',
+      'keepnodes' => FALSE,
       'expire' => FEEDS_EXPIRE_NEVER,
       'author' => 0,
       'authorize' => TRUE,
@@ -124,6 +126,33 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
     unset($form['skip_hash_check']);
     // Islandora objects don't have bodies.
     unset($form['input_format']);
+
+    $collections = islandora_feeds_get_collections_or_content_models('collections');
+    $form['collection'] = array(
+      '#type' => 'select',
+      '#title' => t('Target collection'),
+      '#options' => $collections,
+      '#description' => t("The Islandora collection you want to import into."),
+      '#default_value' => $this->config['collection'],
+      '#required' => TRUE,
+    );
+
+    $cmodels = islandora_feeds_get_collections_or_content_models('cmodels');
+    $form['cmodel'] = array(
+      '#type' => 'select',
+      '#title' => t('Target content model'),
+      '#options' => $cmodels,
+      '#description' => t("The Islandora content model you want to import into."),
+      '#default_value' => $this->config['cmodel'],
+      '#required' => TRUE,
+    );
+
+    $form['keepnodes'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Keep nodes'),
+      '#description' => t('Keep the nodes that are created corresponding to the Islandora objects. Uncheck to automatically delete the nodes.'),
+      '#default_value' => $this->config['keepnodes'],
+    );
 
     $form['dsid'] = array(
       '#type' => 'textfield',
@@ -314,30 +343,29 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
  * Implements hook_feeds_after_save().
  */
 function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
+  $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
   $config = $source->importer->getConfig();
-  // dd($config, 'Config');
-  dd($entity, 'Entity');
-  dd($item, 'Item');
-  $xml = islandora_feeds_create_xml_datastream($item, $entity);
-  dd($xml, 'XML');
+  $processor_config = $config['processor']['config'];
 
-/*
   $tuque = new IslandoraTuque();
   $repository = $tuque->repository;
-  $fedora_object = $repository->constructObject('feedstest');
-  $fedora_object->models = array('islandora:sp_basic_image');
+  $fedora_object = $repository->constructObject('default');
   $fedora_object->label = $entity->title;
-  $datastream_id = $this->config['dsid'];
-  $datastream = $fedora_object->constructDatastream($datastream_id, 'X');
-  $datastream->label = $this->config['dslabel'];
+  $datastream = $fedora_object->constructDatastream($processor_config['dsid'], 'X');
+  $datastream->label = $processor_config['dslabel'];
   $datastream->mimetype = 'text/xml';
-  $datastream->setContentFromString('<foo><content>' . htmlentities(trim($entity->other), ENT_XML1) . '</content></foo>');
+  $datastream->setContentFromString($xml_ds);
   $fedora_object->ingestDatastream($datastream);
+  $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $processor_config['cmodel']);
+  $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $processor_config['collection']);
   $repository->ingestObject($fedora_object);
-*/
 
-  // @todo: Add config option to delete nodes.
-  node_delete($entity->nid);
+  if ($processor_config['keepnodes']) {
+    drupal_set_message(t('Nodes have been kept.'), 'status', FALSE);
+  }
+  else {
+    node_delete($entity->nid);
+  }
 }
 
 function islandora_feeds_create_xml_datastream($item, $entity) {
