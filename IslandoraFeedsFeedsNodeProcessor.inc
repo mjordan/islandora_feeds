@@ -363,7 +363,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $collection = $processor_config['collection'];
 
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  islandora_feeds_ingest_object($entity, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
+  islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
 
   if ($processor_config['keepnodes']) {
     drupal_set_message(t('Nodes have been kept.'), 'status', FALSE);

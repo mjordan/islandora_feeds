@@ -55,6 +55,8 @@ function islandora_feeds_create_xml_datastream($item, $entity) {
  *
  * @param object $entity
  *   The entity as it is passed into islandora_feeds_feeds_after_save().
+ * @param array $item
+ *   The Feeds item.
  * @param string $namespace
  *   The Fedora namespace to use for this object.
  * @param string $dsid
@@ -70,7 +72,7 @@ function islandora_feeds_create_xml_datastream($item, $entity) {
  * @return bool
  *    TRUE if the object was successfuly ingested, FALSE if not.
  */
-function islandora_feeds_ingest_object($entity, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection) {
+function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
     $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
