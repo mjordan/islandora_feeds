@@ -68,13 +68,94 @@ function islandora_feeds_islandora_feedsCModel_islandora_view_object($object, $p
  */
 function islandora_feeds_action_info() {
   return array(
-    'islandora_feeds_create_islandora_objects' => array(
+    'islandora_feeds_create_islandora_objects_action' => array(
       'type' => 'node',
       'label' => t('Create Islandora objects from nodes'),
-      'configurable' => TRUE,
-      'behavior' => array('changes_property'),
-      'triggers' => array('node_presave', 'node_insert', 'node_update'),
+      'configurable' => FALSE,
+      'vbo_configurable' => TRUE,
+      'pass rows' => TRUE,
+      'triggers' => array('any'),
     ),
+  );
+}
+
+/**
+ * Form to configure the 'Create Islandora objects from nodes' action.
+ */
+function islandora_feeds_create_islandora_objects_views_bulk_operations_form($context) {
+  $types = node_type_get_types();
+  $types_options = array();
+  foreach ($types as $type => $properties) {
+    $types_options[$type] = $properties->name;
+  }
+  $form['bundle'] = array(
+    '#type' => 'select',
+    '#title' => t('Bundle'),
+    '#options' => $types_options,
+    '#description' => t("The content type bundle that the objects will be created from."),
+    '#required' => TRUE,
+  );
+  module_load_include('inc', 'islandora_feeds', 'includes/utilities');
+  $collections = islandora_feeds_get_collections_or_content_models('collections');
+  $form['collection'] = array(
+    '#type' => 'select',
+    '#title' => t('Target collection'),
+    '#options' => $collections,
+    '#description' => t("The Islandora collection you want to import into."),
+    '#required' => TRUE,
+  );
+  $cmodels = islandora_feeds_get_collections_or_content_models('cmodels');
+  $form['cmodel'] = array(
+    '#type' => 'select',
+    '#title' => t('Target content model'),
+    '#options' => $cmodels,
+    '#description' => t("The Islandora content model you want to import into."),
+    '#required' => TRUE,
+  );
+  $form['namespace'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Namespace'),
+      '#description' => t('The PID namespace to use for the imported objects.'),
+      '#required' => TRUE,
+  );
+  $form['dslabel'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Datastream label'),
+    '#description' => t('Label of the XML datastream that will hold the imported content. The datastream ID will be the same as the machine name of the bundle you select above.'),
+     '#required' => TRUE,
+  );
+  $author = user_load_by_name('admin');
+  $form['author'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Author'),
+    '#description' => t('Select the author of the nodes to be created - leave empty to assign "anonymous".'),
+    '#autocomplete_path' => 'user/autocomplete',
+    '#default_value' => empty($author->name) ? 'anonymous' : check_plain($author->name),
+  );
+  return $form;
+}
+
+/**
+ * Custom action. Fired from Views Bulk Operations.
+ */
+function islandora_feeds_create_islandora_objects_action($object, $context) {
+  module_load_include('inc', 'islandora_feeds', 'includes/utilities');
+  for ($i = 0; $i < $context['rows']; $i++) {
+    islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
+  }
+}
+
+/**
+ * Action submit button. @todo: Do we need this for VBO actions?
+ * https://drupal.org/node/2052067 doesn't mention it.
+ */
+function islandora_feeds_create_islandora_objects_submit($form, $form_state) {
+  return array(
+    'bundle' => $form_state['values']['bundle'],
+    'collection' => $form_state['values']['collection'],
+    'cmodel' => $form_state['values']['cmodel'],
+    'dslabel' => $form_state['values']['dslabel'],
+    'author' => $form_state['values']['author'],
   );
 }
 
@@ -105,5 +186,4 @@ function islandora_feeds_islandora_required_objects(IslandoraTuque $connection) 
     ),
   );
 }
-
 
