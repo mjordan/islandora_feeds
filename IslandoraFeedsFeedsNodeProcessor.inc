@@ -111,7 +111,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       'expire' => FEEDS_EXPIRE_NEVER,
       'author' => 0,
       'authorize' => TRUE,
-      'dsid' => 'DATA',
+      'dsid' => '',
       'dslabel' => 'Change me',
     ) + parent::configDefaults();
   }
@@ -164,17 +164,10 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#default_value' => $this->config['keepnodes'],
     );
 
-    $form['dsid'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Datastream ID'),
-      '#description' => t('DSID of the XML datastream that will hold the imported content.'),
-      '#default_value' => $this->config['dsid'],
-    );
-
     $form['dslabel'] = array(
       '#type' => 'textfield',
       '#title' => t('Datastream label'),
-      '#description' => t('Label of the XML datastream that will hold the imported content.'),
+      '#description' => t('Label of the XML datastream that will hold the imported content. The datastream ID will be the same as the machine name of the bundle you select above.'),
       '#default_value' => $this->config['dslabel'],
     );
 
@@ -357,7 +350,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $config = $source->importer->getConfig();
   $processor_config = $config['processor']['config'];
   $namespace = $processor_config['namespace'];
-  $dsid = $processor_config['dsid'];
+  $dsid = $processor_config['bundle'];
   $ds_label = $processor_config['dslabel'];
   $cmodel = $processor_config['cmodel'];
   $collection = $processor_config['collection'];

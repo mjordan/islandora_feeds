@@ -35,12 +35,12 @@ function islandora_feeds_get_collections_or_content_models($type) {
   return $ret;
 }
 
-function islandora_feeds_create_xml_datastream($item, $entity) {
+function islandora_feeds_create_xml_datastream($item, $entity, $root) {
   $xml = new XMLWriter();
   $xml->openMemory();
   $xml->setIndent(TRUE);
   $xml->startDocument('1.0', 'utf-8', NULL);
-  $xml->startElement('custom');
+  $xml->startElement($root);
   foreach ($item as $field => $value) {
     $clean_field = str_replace(' ', '_', $field);
     $xml->writeElement($clean_field, $value);
@@ -60,7 +60,8 @@ function islandora_feeds_create_xml_datastream($item, $entity) {
  * @param string $namespace
  *   The Fedora namespace to use for this object.
  * @param string $dsid
- *   The datastream ID to use,
+ *   The datastream ID to use. This corresponds to the machine name of
+ *   the content type bundle from which the object is created.
  * @param string $ds_label
  *   The datastream label to use,
  * @param string $xml_ds
@@ -75,12 +76,12 @@ function islandora_feeds_create_xml_datastream($item, $entity) {
 function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
-    $xml_ds = islandora_feeds_create_xml_datastream($item, $entity);
+    $xml_ds = islandora_feeds_create_xml_datastream($item, $entity, $dsid);
     $tuque = new IslandoraTuque();
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
-    $datastream = $fedora_object->constructDatastream($dsid, 'X');
+    $datastream = $fedora_object->constructDatastream(strtoupper($dsid), 'X');
     $datastream->label = $ds_label;
     $datastream->mimetype = 'text/xml';
     $datastream->setContentFromString($xml_ds);
