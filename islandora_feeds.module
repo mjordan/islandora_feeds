@@ -46,7 +46,7 @@ function islandora_feeds_preprocess_item(array &$variables) {
     $variables['islandora_thumbnail_img'] = theme('image', $params);
   }
   if (isset($islandora_object['DATA'])) {
-    dd("Hi from inside the preprocess function.");
+    // dd("Hi from inside the preprocess function.");
   }
 }
 
@@ -54,7 +54,6 @@ function islandora_feeds_preprocess_item(array &$variables) {
  * Implements hook_CMODEL_PID_islandora_view_object().
  */
 function islandora_feeds_islandora_feedsCModel_islandora_view_object($object, $page_number, $page_size) {
-  dd("Hi from _view_object");
   $output = theme('islandora_feeds_item', array('islandora_object' => $object));
   return array('' => $output);
 }
