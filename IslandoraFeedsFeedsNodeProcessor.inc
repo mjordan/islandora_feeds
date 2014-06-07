@@ -107,6 +107,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       'collection' => 'islandora:root',
       'cmodel' => 'fedora-system:ContentModel-3.0',
       'namespace' => 'islandora',
+      'ingestobjects' => TRUE,
       'keepnodes' => FALSE,
       'expire' => FEEDS_EXPIRE_NEVER,
       'author' => 0,
@@ -157,10 +158,17 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#required' => TRUE,
     );
 
+    $form['ingestobjects'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Ingest objects'),
+      '#description' => t('Ingest Islandora objects during the import. Uncheck to only create nodes. You can use Views Bulk Operations to ingest the objects separately.'),
+      '#default_value' => $this->config['ingestobjects'],
+    );
+
     $form['keepnodes'] = array(
       '#type' => 'checkbox',
       '#title' => t('Keep nodes'),
-      '#description' => t('Keep the nodes that are created corresponding to the Islandora objects. Uncheck to automatically delete the nodes.'),
+      '#description' => t('Keep the nodes that are created corresponding to the Islandora objects. Uncheck to automatically delete the nodes during the import.'),
       '#default_value' => $this->config['keepnodes'],
     );
 
@@ -355,8 +363,13 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $cmodel = $processor_config['cmodel'];
   $collection = $processor_config['collection'];
 
-  module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
+  if ($processor_config['ingestobjects']) {
+    module_load_include('inc', 'islandora_feeds', 'includes/utilities');
+    islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
+  }
+  else {
+    drupal_set_message(t('Objects have not been ingested. You can do this later with Views Bulk Operations.'), 'status', FALSE);
+  }
 
   if ($processor_config['keepnodes']) {
     drupal_set_message(t('Nodes have been kept.'), 'status', FALSE);
