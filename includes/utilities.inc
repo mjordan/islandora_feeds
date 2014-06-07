@@ -81,7 +81,7 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
-    $datastream = $fedora_object->constructDatastream(strtoupper($dsid), 'X');
+    $datastream = $fedora_object->constructDatastream(strtoupper($dsid), 'M');
     $datastream->label = $ds_label;
     $datastream->mimetype = 'text/xml';
     $datastream->setContentFromString($xml_ds);
