@@ -3,11 +3,11 @@
 /**
  * @file
  * Class definition of IslandoraFeedsFeedsNodeProcessor. Nodes are
- * _not_ created for Islandora objects created by this processor.
+ * not created for Islandora objects created by this processor.
  * 
  * @todo:
- *   -Add all columns in CSV to datastream, using column headings as
- *    element names.
+     -Add option to delete each node after the Fedora object has been created.
+     -Add config option to select collection and content model.
  *   -Figure out how to handle thumbnails.
  *   -Figure out how to support deleting content loaded via this module.
  *   -Figure out object validation.
@@ -19,10 +19,10 @@
 class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
 
   /**
-   * Define entity type. This module doesn't use entities.
+   * Define entity type.
    */
   public function entityType() {
-    // return 'node';
+    return 'node';
   }
 
   /**
@@ -38,7 +38,17 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    * Creates a new node in memory and returns it.
    */
   protected function newEntity(FeedsSource $source) {
-    return $source;
+    $node = new stdClass();
+    $node->type = $this->bundle();
+    $node->changed = REQUEST_TIME;
+    $node->created = REQUEST_TIME;
+    $node->language = LANGUAGE_NONE;
+    $node->is_new = TRUE;
+    node_object_prepare($node);
+    // Populate properties that are set by node_object_prepare().
+    $node->log = 'Created by FeedsNodeProcessor';
+    $node->uid = $this->config['author'];
+    return $node;
   }
 
   /**
@@ -50,35 +60,18 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
 
   /**
    * Validates a node.
-   * 
-   * @todo: What do we validate in an Islandora object?
    */
-  /*
-  protected function XXXentityValidate($entity) {
+  protected function entityValidate($entity) {
     if (!isset($entity->uid) || !is_numeric($entity->uid)) {
        $entity->uid = $this->config['author'];
     }
   }
-  */
 
   /**
-   * Create and ingest an Islandora object.
+   * Save a node.
    */
   public function entitySave($entity) {
-    // dd($entity->title, 'Title');
-    // dd($entity->other, 'Other');
-    $tuque = new IslandoraTuque();
-    $repository = $tuque->repository;
-    $fedora_object = $repository->constructObject('feedstest');
-    $fedora_object->models = array('islandora:sp_basic_image');
-    $fedora_object->label = $entity->title;
-    $datastream_id = $this->config['dsid'];
-    $datastream = $fedora_object->constructDatastream($datastream_id, 'X');
-    $datastream->label = $this->config['dslabel'];
-    $datastream->mimetype = 'text/xml';
-    $datastream->setContentFromString('<foo><content>' . htmlentities(trim($entity->other), ENT_XML1) . '</content></foo>');
-    $fedora_object->ingestDatastream($datastream);
-    $repository->ingestObject($fedora_object);
+    node_save($entity);
   }
 
   /**
@@ -87,7 +80,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    * Currently unsupported.
    */
   protected function entityDeleteMultiple($nids) {
-    // node_delete_multiple($nids);
+    node_delete_multiple($nids);
   }
 
   /**
@@ -238,11 +231,8 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    */
   public function getMappingTargets() {
     $type = node_type_get_type($this->bundle());
+    $targets = parent::getMappingTargets();
 
-    // $targets = parent::getMappingTargets();
-    $targets = array();
-
-    /*
     if ($type && $type->has_title) {
       $targets['title'] = array(
         'name' => t('Title'),
@@ -309,18 +299,6 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
         'optional_unique' => TRUE,
       );
     }
-    */
-
-    $targets['title'] = array(
-      'name' => t('Object title'),
-      'description' => t('The objects title.'),
-      'optional_unique' => TRUE,
-    );
-
-    $targets['other'] = array(
-      'name' => t('Object other'),
-      'description' => t('The objects other.'),
-    );
 
     // Let other modules expose mapping targets.
     self::loadMappers();
@@ -330,5 +308,48 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
 
     return $targets;
   }
+}
 
+/**
+ * Implements hook_feeds_after_save().
+ */
+function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
+  $config = $source->importer->getConfig();
+  // dd($config, 'Config');
+  dd($entity, 'Entity');
+  dd($item, 'Item');
+  $xml = islandora_feeds_create_xml_datastream($item, $entity);
+  dd($xml, 'XML');
+
+/*
+  $tuque = new IslandoraTuque();
+  $repository = $tuque->repository;
+  $fedora_object = $repository->constructObject('feedstest');
+  $fedora_object->models = array('islandora:sp_basic_image');
+  $fedora_object->label = $entity->title;
+  $datastream_id = $this->config['dsid'];
+  $datastream = $fedora_object->constructDatastream($datastream_id, 'X');
+  $datastream->label = $this->config['dslabel'];
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromString('<foo><content>' . htmlentities(trim($entity->other), ENT_XML1) . '</content></foo>');
+  $fedora_object->ingestDatastream($datastream);
+  $repository->ingestObject($fedora_object);
+*/
+
+  // @todo: Add config option to delete nodes.
+  node_delete($entity->nid);
+}
+
+function islandora_feeds_create_xml_datastream($item, $entity) {
+  $xml = new XMLWriter();
+  $xml->openMemory();
+  $xml->setIndent(TRUE);
+  $xml->startDocument('1.0', 'utf-8', NULL);
+  $xml->startElement('custom');
+  foreach ($item as $field => $value) {
+    $clean_field = str_replace(' ', '_', $field);
+    $xml->writeElement($clean_field, $value);
+  }
+  $xml->endElement();
+  return $xml->outputMemory();
 }
