@@ -28,6 +28,11 @@ You should map one of the fields in your source to Title in your target. The onl
 
 Once you have configured the importer, you're ready to import your source conent. 
 
+## Notes
+
+* Mapping a source field that is a number to the title won’t work. Islandora defaults to sequential numbering as a label when you attempt it. 
+* When deleting nodes, the error message suggests you’ve deleted Islandora objects. This is not correct - only the Drupal content is deleted. 
+
 ## To do
 
 * Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora 
