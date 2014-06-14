@@ -2,14 +2,7 @@
 
 /**
  * @file
- * Class definition of IslandoraFeedsFeedsNodeProcessor. Nodes are
- * not created for Islandora objects created by this processor.
- * 
- * @todo:
-     -Filter out content models in the config settings form that don't make sense.
- *   -Figure out how to handle thumbnails.
- *   -Figure out how to support deleting content loaded via this module.
- *   -Figure out object validation.
+ * Class definition of IslandoraFeedsFeedsNodeProcessor.
  */
 
 /**
@@ -45,7 +38,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
     $node->is_new = TRUE;
     node_object_prepare($node);
     // Populate properties that are set by node_object_prepare().
-    $node->log = 'Created by FeedsNodeProcessor';
+    $node->log = 'Created by IslandoraFeedsFeedsNodeProcessor';
     $node->uid = $this->config['author'];
     return $node;
   }
@@ -113,7 +106,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       'author' => 0,
       'authorize' => TRUE,
       'dsid' => '',
-      'dslabel' => 'Change me',
+      'dslabel' => '',
     ) + parent::configDefaults();
   }
 
@@ -140,6 +133,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#required' => TRUE,
     );
 
+    // @todo: Eliminate this select list, since we only allow islandora:feedsCModel.
     $cmodels = islandora_feeds_get_collections_or_content_models('cmodels');
     $form['cmodel'] = array(
       '#type' => 'select',

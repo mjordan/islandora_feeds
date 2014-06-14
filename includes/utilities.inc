@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Helper functions used by this module.
+ */
+
+/**
  * Query the resource index to get a list of collections or content
  * models.
  *

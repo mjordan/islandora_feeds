@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Defines all the hooks this module implements.
+ */
+
+/**
  * Implements hook_feeds_plugins().
  */
 function islandora_feeds_feeds_plugins() {
@@ -57,9 +62,10 @@ function islandora_feeds_islandora_feedsCModel_islandora_view_object($object, $p
  * Implements hook_action_info().
  *
  * @todo: This action ingests Islandora objects at a point later
- * in time than the Feed import, so we need to store the target
- * collection and content model. Do we require the user to create
- * fields with a specific name in their template content type?
+ * in time than the Feed import, so we need to store the corresponding
+ * Feeds $item to pass to islandora_feeds_ingest_object(). In db or as serialized
+ * array in files directory? Or add to a specific field in node (and update accordingly
+ * when node fields are updated)?
  */
 function islandora_feeds_action_info() {
   return array(
