@@ -14,7 +14,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Usage
 
-This module provides a Feeds processor that creates Islandora objects. Currently, the only datastream that is created is a managed XML datastream that contains elements mirroring the column headings in CSV files (or equivalent in other input formats) you are loading using Feeds, with element values that correspond to the values in the columns. Also, this module only imports data, it doesn't provide any way to view the imported data (other than by using Islandora's links to the imported datastream in the object's "Datastreams" tab. 
+This module provides a Feeds processor that creates Islandora objects. Currently, the only datastream that is created is a managed XML datastream that contains elements mirroring the column headings in CSV files (or equivalent in other input formats) you are loading using Feeds, with element values that correspond to the values in the columns.
 
 The Processor provided by this module is similar to other Feeds processors. It uses a version of Feeds' Node processor to create a node for each item you are importing. Each node then serves as the source of the Islandora object that is created. You have the option of saving these nodes (for quality assurance) or deleting them immediately after the Islandora object is created.
 
@@ -26,7 +26,7 @@ Be sure to select the correct Islandora content model (which should be "Islandor
 
 You should map one of the fields in your source to Title in your target. The only other columns in your source you need to map are the ones you have defined in your target content type - you do not need to map any of the node properties unless you want to.
 
-Once you have configured the importer, you're ready to import your source conent. 
+Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer. 
 
 ## Notes
 
@@ -35,7 +35,8 @@ Once you have configured the importer, you're ready to import your source conent
 
 ## To do
 
-* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora
+* Improve and generalize the theming of the XML when viewed.
+* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora (mostly done; requires [Views Bulk Operations](https://drupal.org/project/views_bulk_operations))
 * Filter out content models in the config settings form that don't make sense.
 * Figure out how to import handle thumbnails and additional datastreams.
 * Figure out how to support deleting content loaded via this module.
