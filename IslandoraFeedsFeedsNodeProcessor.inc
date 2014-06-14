@@ -105,7 +105,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
   public function configDefaults() {
     return array(
       'collection' => 'islandora:root',
-      'cmodel' => 'fedora-system:ContentModel-3.0',
+      'cmodel' => 'islandora:feedsCModel',
       'namespace' => 'islandora',
       'ingestobjects' => TRUE,
       'keepnodes' => FALSE,

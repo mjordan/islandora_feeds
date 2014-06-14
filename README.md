@@ -22,7 +22,7 @@ For each content model you are importing objects into, you need to create a Drup
 
 After you have created your content type, configure your Feed importer by going to Structure > Feeds importers > Add importer and create a new importer. Attach your content type to the importer. Then edit the importer. The only settings you need to configure are the Processor settings. Under the Processor settings, select the Islandora Feeds node processor, and save. Then in the Processor Mappings, map the fields in your CSV (or similar) source to fields in your target content type.
 
-Be sure to select the correct Islandora content model, collection, and datastream label. The datastream ID will correspond to the machine name of the bundle you attach the feed to. Also, you have the option to keep the nodes created during the import or have them deleted automatically. Note that these nodes do not have any relationship to the objects ingested into Fedora after the import is complete - they are only used as the source of the ingest and are not synchronized with the objects after the import. 
+Be sure to select the correct Islandora content model (which should be "Islandora Feeds Content Model"), collection, and datastream label. The datastream ID will correspond to the machine name of the bundle you attach the feed to. Also, you have the option to keep the nodes created during the import or have them deleted automatically. Note that these nodes do not have any relationship to the objects ingested into Fedora after the import is complete - they are only used as the source of the ingest and are not synchronized with the objects after the import. 
 
 You should map one of the fields in your source to Title in your target. The only other columns in your source you need to map are the ones you have defined in your target content type - you do not need to map any of the node properties unless you want to.
 
@@ -35,7 +35,7 @@ Once you have configured the importer, you're ready to import your source conent
 
 ## To do
 
-* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora 
+* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora
 * Filter out content models in the config settings form that don't make sense.
 * Figure out how to import handle thumbnails and additional datastreams.
 * Figure out how to support deleting content loaded via this module.

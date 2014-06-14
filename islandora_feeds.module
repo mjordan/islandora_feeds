@@ -100,6 +100,7 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
     '#type' => 'select',
     '#title' => t('Target content model'),
     '#options' => $cmodels,
+    '#default_value' => 'islandora:feedsCModel',
     '#description' => t("The Islandora content model you want to import into."),
     '#required' => TRUE,
   );
