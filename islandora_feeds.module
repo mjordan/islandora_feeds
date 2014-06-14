@@ -34,19 +34,10 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_preprocess_theme().
  */
-function islandora_feeds_preprocess_item(array &$variables) {
+function islandora_feeds_preprocess_islandora_feeds_item(array &$variables) {
   $islandora_object = $variables['islandora_object'];
-  // Thumbnail.
-  if (isset($islandora_object['TN'])) {
-    $thumbnail_size_url = url("islandora/object/{$islandora_object->id}/datastream/TN/view");
-    $params = array(
-      'title' => $islandora_object->label,
-      'path' => $thumbnail_size_url,
-    );
-    $variables['islandora_thumbnail_img'] = theme('image', $params);
-  }
-  if (isset($islandora_object['DATA'])) {
-    // dd("Hi from inside the preprocess function.");
+  if (isset($islandora_object['ISLANDORA_STUB'])) {
+    $variables['islandora_content'] = htmlspecialchars($islandora_object['ISLANDORA_STUB']->content);
   }
 }
 
@@ -141,7 +132,6 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
   // islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
-  dd('Hi from ' . $object->title);
 }
 
 /**
