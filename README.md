@@ -18,7 +18,7 @@ This module provides a Feeds processor that creates Islandora objects. Currently
 
 The Processor provided by this module is similar to other Feeds processors. It uses a version of Feeds' Node processor to create a node for each item you are importing. Each node then serves as the source of the Islandora object that is created. You have the option of saving these nodes (for quality assurance) or deleting them immediately after the Islandora object is created.
 
-For each content model you are importing objects into, you need to create a Drupal content type that contains all the fields corresponding to the data in your incoming Feed source. The nodes created during the import are instances of this content type.
+All objects created by this module share a single Islandora content model, but they can contain differing XML datastreams to reflect the "fields" used in a particular collection. For each type of XML datastream that you are importing datastreams into, you need to create a Drupal content type that contains all the fields corresponding to the data in your incoming Feed source. The nodes created during the import are instances of this content type.
 
 After you have created your content type, configure your Feed importer by going to Structure > Feeds importers > Add importer and create a new importer. Attach your content type to the importer. Then edit the importer. The only settings you need to configure are the Processor settings. Under the Processor settings, select the Islandora Feeds node processor, and save. Then in the Processor Mappings, map the fields in your CSV (or similar) source to fields in your target content type.
 
