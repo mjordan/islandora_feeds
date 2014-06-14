@@ -88,6 +88,11 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
     $fedora_object->ingestDatastream($datastream);
     $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
+
+    // Add a custom relationship to RELS_EXT to record the DSID that contains the content.
+    $fedora_object->relationships->registerNamespace('islandora_feeds', 'http://islandorafeeds');
+    $fedora_object->relationships->add('http://islandorafeeds', 'isDerivationOfContentType', strtoupper($dsid));
+
     $repository->ingestObject($fedora_object);
   }
   catch (Exception $e) {

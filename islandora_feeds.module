@@ -36,8 +36,12 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
  */
 function islandora_feeds_preprocess_islandora_feeds_item(array &$variables) {
   $islandora_object = $variables['islandora_object'];
-  if (isset($islandora_object['ISLANDORA_STUB'])) {
-    $variables['islandora_content'] = htmlspecialchars($islandora_object['ISLANDORA_STUB']->content);
+  $dsid_array = $islandora_object->relationships->get('http://islandorafeeds', 'isDerivationOfContentType');
+  if (isset($dsid_array)) {
+    $dsid_string = $dsid_array[0]['object']['value'];
+    if (isset($islandora_object[$dsid_string])) {
+      $variables['islandora_content'] = htmlspecialchars($islandora_object[$dsid_string]->content);
+    }
   }
 }
 
