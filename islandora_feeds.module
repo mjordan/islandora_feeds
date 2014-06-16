@@ -6,23 +6,15 @@
  */
 
 /**
- * Implements hook_menu(). Borrowed from field_ui.module.
+ * Implements hook_menu(). Much code borrowed from field_ui.module.
  */
 function islandora_feeds_menu() {
   // Create tabs for all possible bundles.
   foreach (entity_get_info() as $entity_type => $entity_info) {
-    if ($entity_info['fieldable']) {
       foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
         if (isset($bundle_info['admin'])) {
           // Extract path information from the bundle.
           $path = $bundle_info['admin']['path'];
-          // Different bundles can appear on the same path (e.g. %node_type and
-          // %comment_node_type). To allow field_ui_menu_load() to extract the
-          // actual bundle object from the translated menu router path
-          // arguments, we need to identify the argument position of the bundle
-          // name string ('bundle argument') and pass that position to the menu
-          // loader. The position needs to be casted into a string; otherwise it
-          // would be replaced with the bundle name string.
           if (isset($bundle_info['admin']['bundle argument'])) {
             $bundle_arg = $bundle_info['admin']['bundle argument'];
             $bundle_pos = (string) $bundle_arg;
@@ -31,7 +23,6 @@ function islandora_feeds_menu() {
             $bundle_arg = $bundle_name;
             $bundle_pos = '0';
           }
-
           // Extract access information, providing defaults.
           $access = array_intersect_key($bundle_info['admin'], drupal_map_assoc(array('access callback', 'access arguments')));
           $access += array(
@@ -39,45 +30,38 @@ function islandora_feeds_menu() {
             'access arguments' => array('administer site configuration'),
           );
 
-          // 'Islandora Feeds schema' tab.
-          $items["$path/islandora_feeds_xsd"] = array(
-            'title' => 'Islandora Feeds schema',
-            'page callback' => 'drupal_get_form',
-            'page arguments' => array('islandora_feeds_generate_xsd_form', $bundle_arg),
-            'type' => MENU_LOCAL_TASK,
-            'weight' => 20,
-          ) + $access;
+          // We only want the node entities, not the comment node entities.
+            if (preg_match('/\/manage\/%node_type$/', $path)) {
+            // 'Islandora Feeds schema' tab.
+            $items["$path/islandora_feeds_xsd"] = array(
+              'title' => 'Islandora Feeds schema',
+              'page callback' => 'drupal_get_form',
+              'page arguments' => array('islandora_feeds_generate_xsd_form', $bundle_arg),
+              'type' => MENU_LOCAL_TASK,
+              'weight' => 20,
+            ) + $access;
+          }
         }
       }
-    }
   }
   return $items;
 }
 
 /**
  * Form constructor for the Islandora Feeds XSD generation tool.
+ * No submit button or callback is required.
  */
 function islandora_feeds_generate_xsd_form($form, &$form_state, $bundle_arg) {
-  dd($bundle_arg);
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
   $form['schema'] = array(
     '#type' => 'textarea',
     '#title' => t('Current schema'),
-    // '#default_value' => islandora_feeds_generate_xsd($bundle_arg),
     '#default_value' => theme('schema_xsd', array('content_type' => $bundle_arg->type)),
     '#rows' => 20,
     '#description' => t('Copy this and paste it into...'),
   );
-  // No submit button is required.
-  // $form['actions'] = array('#type' => 'actions');
-  // $form['actions']['value'] = array('#type' => 'value', '#value' => 'bundle_arg'); 
-  // $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Generate schema'));
   return $form;  
 }
-
-// function islandora_feeds_generate_xsd_form_submit($form, &$form_state, $bundle_arg) {
-  // islandora_feeds_generate_xsd($bundle_arg);
-// }
 
 /**
  * Implements hook_feeds_plugins().
