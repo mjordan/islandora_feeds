@@ -104,3 +104,28 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
     drupal_set_message(t('Error ingesting Islandora object corresponding to node %n (title: %t): %m', array('%n' => $entity->nid, '%t' => $entity->title, '%m' => $e->getMessage())), 'error', FALSE);
   }
 }
+
+function islandora_feeds_generate_xsd($bundle_arg) {
+  $fields = field_info_instances("node", $bundle_arg->type);
+  foreach ($fields as $field_name => $info) {
+    dd($field_name);
+  }
+/*
+  foreach (field_info_fields() as $field_name => $field) {
+    // dd($field_name, 'field name');
+    // dd($field, 'field');
+  }
+ $options = array();
+    foreach (field_info_bundles('node') as $bundle => $info) {
+      if (!empty($info['label'])) {
+        $options[$bundle] = $info;
+      }
+      else {
+        $options[$bundle] = $info;
+      }
+    }
+
+  dd($options);
+*/
+  return "hey there, I'm a " . $bundle_arg->type;
+}
