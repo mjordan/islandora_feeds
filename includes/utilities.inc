@@ -40,7 +40,15 @@ function islandora_feeds_get_collections_or_content_models($type) {
   return $ret;
 }
 
-function islandora_feeds_create_xml_datastream($item, $entity, $root) {
+/**
+ * Creates XML datastream.
+ *
+ * @param array $item
+ *   The Feeds item.
+ * @return string
+ *   The serialized XML datastream.
+ */
+function islandora_feeds_create_xml_datastream($item) {
   $xml = new XMLWriter();
   $xml->openMemory();
   $xml->setIndent(TRUE);
@@ -76,28 +84,23 @@ function islandora_feeds_create_xml_datastream($item, $entity, $root) {
  * @param string $collection
  *   The collection to add the object to.
  * @return bool
- *    TRUE if the object was successfuly ingested, FALSE if not.
+ *   TRUE if the object was successfuly ingested, FALSE if not.
  */
 function islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
-    $xml_ds = islandora_feeds_create_xml_datastream($item, $entity, $dsid);
+    $xml_ds = islandora_feeds_create_xml_datastream($item);
     $tuque = new IslandoraTuque();
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
-    $datastream = $fedora_object->constructDatastream(strtoupper('OBJ'), 'M');
+    $datastream = $fedora_object->constructDatastream('OBJ', 'M');
     $datastream->label = 'Field data';
     $datastream->mimetype = 'text/xml';
     $datastream->setContentFromString($xml_ds);
     $fedora_object->ingestDatastream($datastream);
     $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
-
-    // Add a custom relationship to RELS_EXT to record the DSID that contains the content.
-    // $fedora_object->relationships->registerNamespace('islandora_feeds', 'http://islandorafeeds');
-    // $fedora_object->relationships->add('http://islandorafeeds', 'isDerivationOfContentType', strtoupper($dsid));
-
     $repository->ingestObject($fedora_object);
   }
   catch (Exception $e) {

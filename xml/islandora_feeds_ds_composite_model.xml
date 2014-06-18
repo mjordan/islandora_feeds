@@ -1,5 +1,5 @@
 <dsCompositeModel xmlns="info:fedora/fedora-system:def/dsCompositeModel#">
-  <dsTypeModel ID="FIELDDATA" >
+  <dsTypeModel ID="OBJ" >
     <form MIME="text/xml"></form>
   </dsTypeModel>
   <dsTypeModel ID="DC" >
