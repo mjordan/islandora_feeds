@@ -1,4 +1,7 @@
 <dsCompositeModel xmlns="info:fedora/fedora-system:def/dsCompositeModel#">
+  <dsTypeModel ID="FIELDDATA" >
+    <form MIME="text/xml"></form>
+  </dsTypeModel>
   <dsTypeModel ID="DC" >
     <form FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" MIME="text/xml"></form>
   </dsTypeModel>

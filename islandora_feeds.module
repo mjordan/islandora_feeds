@@ -103,13 +103,7 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
  */
 function islandora_feeds_preprocess_islandora_feeds_item(array &$variables) {
   $islandora_object = $variables['islandora_object'];
-  $dsid_array = $islandora_object->relationships->get('http://islandorafeeds', 'isDerivationOfContentType');
-  if (isset($dsid_array)) {
-    $dsid_string = $dsid_array[0]['object']['value'];
-    if (isset($islandora_object[$dsid_string])) {
-      $variables['islandora_content'] = htmlspecialchars($islandora_object[$dsid_string]->content);
-    }
-  }
+  $variables['islandora_content'] = htmlspecialchars($islandora_object['OBJ']->content);
 }
 
 /**
@@ -205,12 +199,6 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
       '#description' => t('The PID namespace to use for the imported objects.'),
       '#required' => TRUE,
   );
-  $form['dslabel'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Datastream label'),
-    '#description' => t('Label of the XML datastream that will hold the imported content. The datastream ID will be the same as the machine name of the bundle you select above.'),
-     '#required' => TRUE,
-  );
   $author = user_load_by_name('admin');
   $form['author'] = array(
     '#type' => 'textfield',
@@ -227,7 +215,7 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
  */
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  // islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection);
+  // islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection);
 }
 
 /**
@@ -238,7 +226,6 @@ function islandora_feeds_create_islandora_objects_action_submit($form, $form_sta
     'bundle' => $form_state['values']['bundle'],
     'collection' => $form_state['values']['collection'],
     'cmodel' => $form_state['values']['cmodel'],
-    'dslabel' => $form_state['values']['dslabel'],
     'author' => $form_state['values']['author'],
   );
 }
@@ -261,6 +248,7 @@ function islandora_feeds_islandora_required_objects(IslandoraTuque $connection) 
   $datastream->mimetype = 'text/xml';
   $datastream->setContentFromFile("$module_path/xml/islandora_feeds_ds_composite_model.xml", FALSE);
   $islandora_feeds_content_model->ingestDatastream($datastream);
+
   return array(
     'islandora_feeds' => array(
       'title' => 'Islandora Feeds',

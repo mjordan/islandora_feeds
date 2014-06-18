@@ -45,7 +45,7 @@ function islandora_feeds_create_xml_datastream($item, $entity, $root) {
   $xml->openMemory();
   $xml->setIndent(TRUE);
   $xml->startDocument('1.0', 'utf-8', NULL);
-  $xml->startElement($root);
+  $xml->startElement('fielddata');
   foreach ($item as $field => $value) {
     $clean_field = str_replace(' ', '_', $field);
     $xml->writeElement($clean_field, $value);
@@ -78,7 +78,7 @@ function islandora_feeds_create_xml_datastream($item, $entity, $root) {
  * @return bool
  *    TRUE if the object was successfuly ingested, FALSE if not.
  */
-function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_label, $xml_ds, $cmodel, $collection) {
+function islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
     $xml_ds = islandora_feeds_create_xml_datastream($item, $entity, $dsid);
@@ -86,8 +86,8 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
-    $datastream = $fedora_object->constructDatastream(strtoupper($dsid), 'M');
-    $datastream->label = $ds_label;
+    $datastream = $fedora_object->constructDatastream(strtoupper('OBJ'), 'M');
+    $datastream->label = 'Field data';
     $datastream->mimetype = 'text/xml';
     $datastream->setContentFromString($xml_ds);
     $fedora_object->ingestDatastream($datastream);
@@ -95,8 +95,8 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
 
     // Add a custom relationship to RELS_EXT to record the DSID that contains the content.
-    $fedora_object->relationships->registerNamespace('islandora_feeds', 'http://islandorafeeds');
-    $fedora_object->relationships->add('http://islandorafeeds', 'isDerivationOfContentType', strtoupper($dsid));
+    // $fedora_object->relationships->registerNamespace('islandora_feeds', 'http://islandorafeeds');
+    // $fedora_object->relationships->add('http://islandorafeeds', 'isDerivationOfContentType', strtoupper($dsid));
 
     $repository->ingestObject($fedora_object);
   }
@@ -105,27 +105,3 @@ function islandora_feeds_ingest_object($entity, $item, $namespace, $dsid, $ds_la
   }
 }
 
-function islandora_feeds_generate_xsd($bundle_arg) {
-  $fields = field_info_instances("node", $bundle_arg->type);
-  foreach ($fields as $field_name => $info) {
-    dd($field_name);
-  }
-/*
-  foreach (field_info_fields() as $field_name => $field) {
-    // dd($field_name, 'field name');
-    // dd($field, 'field');
-  }
- $options = array();
-    foreach (field_info_bundles('node') as $bundle => $info) {
-      if (!empty($info['label'])) {
-        $options[$bundle] = $info;
-      }
-      else {
-        $options[$bundle] = $info;
-      }
-    }
-
-  dd($options);
-*/
-  return "hey there, I'm a " . $bundle_arg->type;
-}
