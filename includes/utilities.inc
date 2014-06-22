@@ -41,30 +41,7 @@ function islandora_feeds_get_collections_or_content_models($type) {
 }
 
 /**
- * Creates XML datastream.
- *
- * @param array $item
- *   The Feeds item.
- * @return string
- *   The serialized XML datastream.
- */
-function islandora_feeds_create_xml_datastream($item) {
-  $xml = new XMLWriter();
-  $xml->openMemory();
-  $xml->setIndent(TRUE);
-  $xml->startDocument('1.0', 'utf-8', NULL);
-  $xml->startElement('fielddata');
-  foreach ($item as $field => $value) {
-    $clean_field = str_replace(' ', '_', $field);
-    $xml->writeElement($clean_field, $value);
-  }
-  $xml->endElement();
-  return $xml->outputMemory();
-}
-
-/**
- * Ingest an Islandora object. @todo: Can we resuse an existing function
- *  to do this?
+ * Ingest an Islandora object.
  *
  * @param object $entity
  *   The entity as it is passed into islandora_feeds_feeds_after_save().
@@ -89,7 +66,7 @@ function islandora_feeds_create_xml_datastream($item) {
 function islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
-    $xml_ds = islandora_feeds_create_xml_datastream($item);
+    $xml_ds = theme('islandora_feeds_item_ingest', array('node' => $entity));
     $tuque = new IslandoraTuque();
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
