@@ -45,8 +45,6 @@ function islandora_feeds_get_collections_or_content_models($type) {
  *
  * @param object $entity
  *   The entity as it is passed into islandora_feeds_feeds_after_save().
- * @param array $item
- *   The Feeds item.
  * @param string $namespace
  *   The Fedora namespace to use for this object.
  * @param string $dsid
@@ -63,7 +61,7 @@ function islandora_feeds_get_collections_or_content_models($type) {
  * @return bool
  *   TRUE if the object was successfuly ingested, FALSE if not.
  */
-function islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection) {
+function islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection) {
   // @todo: Add more granular error catching.
   try {
     $xml_ds = theme('islandora_feeds_item_ingest', array('node' => $entity));

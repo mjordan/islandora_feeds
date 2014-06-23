@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This module allows users to create Islandora objects using the Feeds contrib module. Still under development, so use cases are welcom.
+This module allows users to create Islandora objects using the Feeds contrib module. Still under development, so use cases are welcome.
 
 ## Requirements
 

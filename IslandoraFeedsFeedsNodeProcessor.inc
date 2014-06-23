@@ -348,7 +348,7 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
 
   if ($processor_config['ingestobjects']) {
     module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-    islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection);
+    islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection);
   }
   else {
     drupal_set_message(t('Objects have not been ingested. You can do this later with Views Bulk Operations.'), 'status', FALSE);

@@ -162,12 +162,6 @@ function islandora_feeds_islandora_feedsCModel_islandora_view_object($object, $p
 
 /**
  * Implements hook_action_info().
- *
- * @todo: This action ingests Islandora objects at a point later
- * in time than the Feed import, so we need to store the corresponding
- * Feeds $item to pass to islandora_feeds_ingest_object(). In db or as serialized
- * array in files directory? Or add to a specific field in node (and update accordingly
- * when node fields are updated)?
  */
 function islandora_feeds_action_info() {
   return array(
@@ -238,7 +232,7 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
  */
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  // islandora_feeds_ingest_object($entity, $item, $namespace, $xml_ds, $cmodel, $collection);
+  islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection);
 }
 
 /**
