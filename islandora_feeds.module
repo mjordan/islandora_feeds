@@ -105,10 +105,24 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
 
 /**
  * Implements hook_preprocess_theme().
+ *
+ * @todo: Use standard Drupal table theming here.
  */
 function islandora_feeds_preprocess_islandora_feeds_item_display(array &$variables) {
   $islandora_object = $variables['islandora_object'];
-  $variables['islandora_content'] = htmlspecialchars($islandora_object['OBJ']->content);
+
+  $xsl_doc = new DOMDocument();
+  $path_to_xsl = drupal_get_path('module', 'islandora_feeds') . '/xml/xml2table.xsl';
+  $xsl_doc->load($path_to_xsl);
+
+  $xml_doc = new DOMDocument();
+  $xml_doc->loadXML($islandora_object['OBJ']->content);
+
+  $xslt_proc = new XSLTProcessor();
+  $xslt_proc->importStylesheet($xsl_doc);
+  $xslt_proc->registerPHPFunctions();
+
+  $variables['islandora_content'] = $xslt_proc->transformToXML($xml_doc);
 }
 
 /**
