@@ -11,7 +11,7 @@
 
 <!-- Select all children of the root node. -->
 <xsl:template match="*">
-      <tr><th><xsl:value-of select="name()"/></th><td><xsl:value-of select="."/></td></tr>
+      <tr><th><xsl:value-of select="@label"/></th><td><xsl:value-of select="."/></td></tr>
 </xsl:template>
 
 </xsl:stylesheet>

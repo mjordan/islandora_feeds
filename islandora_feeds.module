@@ -92,12 +92,10 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
     ),
     'islandora_feeds_item_display' => array(
       'template' => 'theme/item-display',
-      'pattern' => 'islandora_feeds__',
       'variables' => array('islandora_object' => NULL),
     ),
     'islandora_feeds_item_ingest' => array(
       'template' => 'theme/item-ingest',
-      'pattern' => 'islandora_feeds__',
       'variables' => array('node' => NULL),
     ),
   );
@@ -133,8 +131,12 @@ function islandora_feeds_preprocess_islandora_feeds_item_ingest(array &$variable
   $variables['title'] = $node->title;
   $object_fields = field_info_instances("node", $node->type);
   // @todo: Add support for multiple field instances.
+  dd($object_fields, "Object fields from preprocess function");
   foreach ($object_fields as $field_name => $info) {
-    $variables[$field_name] = $node->{$field_name}['und'][0]['value'];
+    if (isset($info['field_name'])) {
+      $variables['field_data'][] = array('field_name' => $field_name, 'field_label' => $info['label'],
+        'field_value' => $node->{$field_name}['und'][0]['value']);
+    }
   }
 }
 
@@ -149,11 +151,6 @@ function islandora_feeds_preprocess_schema_xsd(array &$variables) {
   }
   $variables['content_type_cammel'] = implode('', $content_type_cammel_words);
   $object_fields = field_info_instances("node", $content_type);
-
-  // Placeholder, not currently used.
-  // if (module_exists('field_group')) {
-    // $object_field_groups = field_group_info_groups("node", $content_type);
-  // }
 
   $fields = array('title');
   foreach ($object_fields as $field_name => $info) {
