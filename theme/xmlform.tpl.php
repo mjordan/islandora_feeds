@@ -13,9 +13,9 @@
  *     A list of all the fields in the content type.
  */
 ?>
-<?php print '<?xml version="1.0"?>'; ?>
-
+<?php print '<?xml version="1.0"?>' . "\n"; ?>
 <definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3">
+      <?php print "<!-- " . trim($documentation) . " -->\n"; ?>
   <properties>
     <root_name>fielddata</root_name>
     <schema_uri/>
