@@ -53,9 +53,9 @@ You should map one of the fields in your source to Title in your target. The onl
 
 Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer.
 
-### Generating a schema from your content type and using the XML Forms Builder
+### Generating an XML Forms definition file and XSD Schema from your content type
 
-If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you will need to generate a schema. You can do this by going to Structure > [your content type] > edit > Islandora Feeds Schema. Simply copy the schema into a file (ending in .xsd) in the Islandora XML Form Builder's 'schema' directory so the Forms Builder can access it. Every time you add or remove a field from your content type, you should regenerate the schema and update its .xsd file.
+If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content typ on this page.
 
 ## Notes
 

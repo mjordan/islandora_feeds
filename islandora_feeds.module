@@ -53,17 +53,17 @@ function islandora_feeds_menu() {
  */
 function islandora_feeds_helpers_form($form, &$form_state, $bundle_arg) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  $form['schema'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Current schema'),
-    '#default_value' => theme('schema_xsd', array('content_type' => $bundle_arg->type)),
-    '#rows' => 20,
-    '#description' => t('Copy this and paste it into...'),
-  );
   $form['xmlform'] = array(
     '#type' => 'textarea',
     '#title' => t('Current XML Forms form definition file'),
     '#default_value' => theme('xmlform', array('content_type' => $bundle_arg->type)),
+    '#rows' => 20,
+    '#description' => t('Copy this and paste it into...'),
+  );
+  $form['schema'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Current schema'),
+    '#default_value' => theme('schema_xsd', array('content_type' => $bundle_arg->type)),
     '#rows' => 20,
     '#description' => t('Copy this and paste it into...'),
   );
