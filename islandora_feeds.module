@@ -132,8 +132,10 @@ function islandora_feeds_preprocess_islandora_feeds_item_ingest(array &$variable
   $object_fields = field_info_instances("node", $node->type);
   // @todo: Add support for multiple field instances.
   foreach ($object_fields as $field_name => $info) {
+    $trimmed_field_name = preg_replace('/^field_/', '', $field_name);
     if (isset($info['field_name'])) {
-      $variables['field_data'][] = array('field_name' => $field_name, 'field_label' => htmlspecialchars($info['label']),
+      $variables['field_data'][] = array('field_name' => $trimmed_field_name,
+        'field_label' => htmlspecialchars($info['label']),
         'field_value' => htmlspecialchars($node->{$field_name}['und'][0]['value']));
     }
   }
