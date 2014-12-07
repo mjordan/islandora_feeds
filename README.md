@@ -31,9 +31,9 @@ the module ingests Islandora objects, one per row of the CSV, each with an OBJ d
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
   <fielddata>
-     <title>First title</title>
-     <field_1>First item's field 1 value</field_1>
-     <field_2> First item's field 2 value</field_2>
+     <title label="Title">First title</title>
+     <field_1 label="Field 1">First item's field 1 value</field_1>
+     <field_2 label="Field 2"> First item's field 2 value</field_2>
 </fielddata>
 ```
 
