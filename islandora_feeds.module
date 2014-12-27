@@ -141,6 +141,8 @@ function islandora_feeds_preprocess_islandora_feeds_item_ingest(array &$variable
   $node = $variables['node'];
   $variables['title'] = $node->title;
   $object_fields = field_info_instances("node", $node->type);
+  // We remove this field because we don't want it in our object's XML field data.
+  unset($object_fields['field_tn']); 
   // @todo: Add support for multiple field instances.
   foreach ($object_fields as $field_name => $info) {
     $trimmed_field_name = preg_replace('/^field_/', '', $field_name);

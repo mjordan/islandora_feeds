@@ -70,11 +70,21 @@ function islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $c
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
     $fedora_object->owner = $owner;
-    $datastream = $fedora_object->constructDatastream('OBJ', 'M');
-    $datastream->label = 'Field data';
-    $datastream->mimetype = 'text/xml';
-    $datastream->setContentFromString($xml_ds);
-    $fedora_object->ingestDatastream($datastream);
+    // Add the field data datastream
+    // @todo: Use the label defined in the feed importer settings.
+    $field_data_datastream = $fedora_object->constructDatastream('OBJ', 'M');
+    $field_data_datastream->label = 'Field data';
+    $field_data_datastream->mimetype = 'text/xml';
+    $field_data_datastream->setContentFromString($xml_ds);
+    $fedora_object->ingestDatastream($field_data_datastream);
+    // Add the TN datastream
+    if (isset($entity->field_tn['und'][0]['uri'])) {
+      $tn_datastream = $fedora_object->constructDatastream('TN', 'M');
+      $tn_datastream->label = 'TN';
+      $tn_datastream->mimetype = $entity->field_tn['und'][0]['filemime'];
+      $tn_datastream->setContentFromFile($entity->field_tn['und'][0]['uri']);
+      $fedora_object->ingestDatastream($tn_datastream);
+    }
     $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
     $repository->ingestObject($fedora_object);

@@ -53,6 +53,10 @@ You should map one of the fields in your source to Title in your target. The onl
 
 Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer.
 
+### Adding thumbnails
+
+If your Drupal nodes have an image field with the machine name 'field_tn', the image in this field (or the first image in the field if it repeatable) will be added to the corresponding Islandora object as a TN datastream. You can add the image to your nodes manually (via the node add/edit form) or in the feed import; if the latter, you will need to upload the images to your Drupal server to a location the feed fetcher can access it (usually the public files directory).
+
 ### Generating an XML Forms definition file and XSD Schema from your content type
 
 If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content typ on this page.
