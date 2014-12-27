@@ -6,4 +6,3 @@ package = Islandora Tools
 version = 7.x-dev
 core = 7.x
 php = 5.3
-stylesheets[all][] = css/islandora_premis.css
