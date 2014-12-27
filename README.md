@@ -18,6 +18,8 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 This module provides a Feeds processor that creates Islandora objects. Currently, the only datastream that is created is a managed XML datastream (with the datastream ID of 'OBJ') that contains elements mirroring the column headings in CSV files (or equivalent in other input formats) you are loading using Feeds, with element values that correspond to the values in the columns.
 
+This module differs from the [Islandora Data Solution Pack](https://github.com/axfelix/islandora_solution_pack_data) in that it creates an Islandora object for each row in a CSV file, whereas that module creates an Islandora object for an Excel, LibreOffice, or CSV file as a whole.
+
 For example, given a CSV file like this as input:
 
 ```
