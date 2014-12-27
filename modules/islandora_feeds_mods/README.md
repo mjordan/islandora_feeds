@@ -10,7 +10,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Overview
 
-This module provides a sample implementation of creating a MODS datastream from an OBJ datastream created by the Islandora Feeds module. With some development effort, the Islandora Feeds module will allow the direct generation of MODS and other complex XML datastreams. Until then, enjoy this workaround.
+This module provides a sample implementation for generating a MODS datastream from an OBJ datastream created by the Islandora Feeds module. With some development effort, the Islandora Feeds module will allow the direct generation of MODS and other complex XML datastreams. Until then, enjoy this workaround.
 
 Given a OBJ datastream like this:
 
@@ -38,6 +38,8 @@ Only the `<titleInfo>` fragment is provided in this example because that's the o
 ## Usage
 
 Once enabled, this module creates a MODS datastream for every object created from Feeds data. To see it in action, enable it, generate some Islandora objects using Islandora Feeds, look at thoese objects' MODS datastreams, and modify the module to suit your own needs.
+
+At a minimum, you will need to change the `$collection` variable at the top of the .module file's islandora_feeds_mods_islandora_feedscmodel_islandora_derivative() function to match the PID of the collection you are ingesting your objects into. You may also want to modify the feed2mods.xsl file so that it selects values from fields in your objects. As is, it will only select the value of the `<title>` element, which all objects ingested using the Islandora Feeds module should have.
 
 ## Troubleshooting/issues/feedback
 
