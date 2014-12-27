@@ -64,9 +64,9 @@ If you choose to create your Islandora objects at a time after importing the Fee
 
 If your Drupal nodes have an image field with the machine name 'field_tn', the image in this field (or the first image in the field if it repeatable) will be added to the corresponding Islandora object as a TN datastream. You can add the image to your nodes manually (via the node add/edit form) or in the feed import; if the latter, you will need to upload the images to your Drupal server to a location the feed fetcher can access it (usually the public files directory).
 
-### Generating an XML Forms definition file and XSD Schema from your content type
+### Generating an XML Forms definition file and XSD Schema for your objects
 
-If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, this module provides an auto-generated form definition file. You can get this file by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and import it into the Form Builder. You can also dowload an XSD Schema for your content type from this page.
+If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, this module provides an auto-generated form definition file. You can get this file by going to Structure > [your Drupal content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and import it into the Form Builder. You can also dowload an XSD Schema for your content type from this page.
 
 ### Search
 
