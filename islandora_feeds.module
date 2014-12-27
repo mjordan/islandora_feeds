@@ -209,7 +209,7 @@ function islandora_feeds_action_info() {
     'islandora_feeds_create_islandora_objects_action' => array(
       'type' => 'node',
       'label' => t('Create Islandora objects from nodes'),
-      'configurable' => FALSE,
+      'configurable' => TRUE,
       'vbo_configurable' => TRUE,
       'pass rows' => TRUE,
       'triggers' => array('any'),
@@ -273,7 +273,7 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
  */
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection);
+  islandora_feeds_ingest_object($object, $context['namespace'], NULL, $context['cmodel'], $context['collection'], $context['author']);
 }
 
 /**
@@ -281,6 +281,7 @@ function islandora_feeds_create_islandora_objects_action($object, $context) {
  */
 function islandora_feeds_create_islandora_objects_action_submit($form, $form_state) {
   return array(
+    'namespace' => $form_state['values']['namespace'],
     'bundle' => $form_state['values']['bundle'],
     'collection' => $form_state['values']['collection'],
     'cmodel' => $form_state['values']['cmodel'],

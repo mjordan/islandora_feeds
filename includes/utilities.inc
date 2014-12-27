@@ -61,7 +61,7 @@ function islandora_feeds_get_collections_or_content_models($type) {
  * @return bool
  *   TRUE if the object was successfuly ingested, FALSE if not.
  */
-function islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection) {
+function islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $collection, $owner) {
   // @todo: Add more granular error catching.
   try {
     $xml_ds = theme('islandora_feeds_item_ingest', array('node' => $entity));
@@ -69,6 +69,7 @@ function islandora_feeds_ingest_object($entity, $namespace, $xml_ds, $cmodel, $c
     $repository = $tuque->repository;
     $fedora_object = $repository->constructObject($namespace);
     $fedora_object->label = $entity->title;
+    $fedora_object->owner = $owner;
     $datastream = $fedora_object->constructDatastream('OBJ', 'M');
     $datastream->label = 'Field data';
     $datastream->mimetype = 'text/xml';
