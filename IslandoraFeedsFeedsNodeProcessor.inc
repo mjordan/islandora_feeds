@@ -131,17 +131,6 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#required' => TRUE,
     );
 
-    // @todo: Eliminate this select list, since we only allow islandora:feedsCModel.
-    $cmodels = islandora_feeds_get_collections_or_content_models('cmodels');
-    $form['cmodel'] = array(
-      '#type' => 'select',
-      '#title' => t('Target content model'),
-      '#options' => $cmodels,
-      '#description' => t("The Islandora content model you want to import into."),
-      '#default_value' => $this->config['cmodel'],
-      '#required' => TRUE,
-    );
-
     $form['namespace'] = array(
       '#type' => 'textfield',
       '#title' => t('Namespace'),
