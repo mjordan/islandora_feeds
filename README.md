@@ -23,7 +23,7 @@ This module differs from the [Islandora Data Solution Pack](https://github.com/a
 For example, given a CSV file like this as input:
 
 ```
-Title, Field 1, Field 2
+Title, Field 1, Field 2, Field 3
 "A sample Islandora object","The first field's value", "The second field's value", "The third field's value"
 "Second title","Second item's field 1 value", "Second item's field 2 value", "Second item's field 3 value"
 "Third title","Third item's field 1 value", "Third item's field 2 value", "Third item's field 3 value"
