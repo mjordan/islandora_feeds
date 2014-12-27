@@ -69,7 +69,6 @@ function islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection
     $fedora_object->label = $entity->title;
     $fedora_object->owner = $owner;
     // Add the field data datastream
-    // @todo: Use the label defined in the feed importer settings.
     $field_data_datastream = $fedora_object->constructDatastream('OBJ', 'M');
     $field_data_datastream->label = 'Field data';
     $field_data_datastream->mimetype = 'text/xml';
