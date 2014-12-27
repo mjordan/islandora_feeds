@@ -1,8 +1,8 @@
-# Islandora Feeds Importer
+# Islandora Feeds
 
 ## Introduction
 
-This module allows users to create Islandora objects using the Feeds contrib module. Still under development, so use cases are welcome.
+This module allows users to create Islandora objects using the Drupal Feeds contrib module.
 
 ## Requirements
 
@@ -32,9 +32,9 @@ the module ingests Islandora objects, one per row of the CSV, each with an OBJ d
 
 ```xml
 <fielddata>
-     <title label="Title">First title</title>
-     <field_1 label="Field 1">First item's field 1 value</field_1>
-     <field_2 label="Field 2"> First item's field 2 value</field_2>
+  <title label="Title">First title</title>
+  <field_1 label="Field 1">First item's field 1 value</field_1>
+  <field_2 label="Field 2"> First item's field 2 value</field_2>
 </fielddata>
 ```
 Field labels and values are displayed by default in a vertical table layout, like this:
@@ -65,7 +65,7 @@ If your Drupal nodes have an image field with the machine name 'field_tn', the i
 
 ### Generating an XML Forms definition file and XSD Schema from your content type
 
-If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content type from this page.
+If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, this module provides an auto-generated form definition file. You can get this file by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and import it into the Form Builder. You can also dowload an XSD Schema for your content type from this page.
 
 ### Search
 
