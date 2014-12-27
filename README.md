@@ -56,7 +56,9 @@ First, create a Drupal content type containing the fields that you want to have 
 
 Note that nodes created during the import do not have any continuing relationship to the objects ingested into Fedora after the objects are created - they are only used as the source of the ingest and are not synchronized with the objects after the import.
 
-After you have created your Drupal content type, configure your Feed importer by going to Structure > Feeds importers > Add importer and create a new importer. Attach your Drupal content type to the importer. Other settings are as follows.
+The collection you want to import objects into mush have "Islandora Feeds Content Model (islandora:feedsCModel)" enabled in its collection policy.
+
+After you have created your Drupal content type and enabled the Islandora Feeds Content Model in your target collection, configure your Feed importer by going to Structure > Feeds importers > Add importer and create a new importer. Attach your Drupal content type to the importer. Other settings are as follows.
 
 #### Basic settings
 
