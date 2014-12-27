@@ -275,7 +275,7 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
  */
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  islandora_feeds_ingest_object($object, $context['namespace'], NULL, $context['cmodel'], $context['collection'], $context['author']);
+  islandora_feeds_ingest_object($object, $context['namespace'], $context['cmodel'], $context['collection'], $context['author']);
 }
 
 /**
