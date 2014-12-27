@@ -67,6 +67,10 @@ If your Drupal nodes have an image field with the machine name 'field_tn', the i
 
 If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content type from this page.
 
+### Search
+
+The data in the XML datastreams in the objects created by this module is indexed in Solr with no additional configuration. However, there is currently no field-specific search available. Advanced search for these objects would be an awesome addition, if someone wants to take it on.
+
 ## Notes
 
 * Mapping a source field that is a number to the title won’t work. Islandora defaults to sequential numbering as a label when you attempt it. 
