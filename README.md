@@ -24,17 +24,18 @@ For example, given a CSV file like this as input:
 
 ```
 Title, Field 1, Field 2
-"First title","First item's field 1 value", "First item's field 2 value"
-"Second title","Second item's field 1 value", "Second item's field 2 value"
-"Third title","Third item's field 1 value", "Third item's field 2 value"
+"A sample Islandora object","The first field's value", "The second field's value", "The third field's value"
+"Second title","Second item's field 1 value", "Second item's field 2 value", "Second item's field 3 value"
+"Third title","Third item's field 1 value", "Third item's field 2 value", "Third item's field 3 value"
 ```
 the module ingests Islandora objects, one per row of the CSV, each with an OBJ datastream that looks like:
 
 ```xml
 <fielddata>
-  <title label="Title">First title</title>
-  <field_1 label="Field 1">First item's field 1 value</field_1>
-  <field_2 label="Field 2"> First item's field 2 value</field_2>
+  <title label="Title">A sample Islandora object</title>
+  <field_1 label="First field">The first field's value</field_1>
+  <field_2 label="Second field">The second field's value</field_2>
+  <field_3 label="Third field">The third field's value</field_3>
 </fielddata>
 ```
 Field labels and values are displayed by default in a vertical table layout, like this:
