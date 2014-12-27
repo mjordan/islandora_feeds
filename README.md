@@ -49,11 +49,13 @@ First, create a Drupal content type containing the fields that you want to have 
 
 After you have created your content type, configure your Feed importer by going to Structure > Feeds importers > Add importer and create a new importer. Attach your content type to the importer. Then edit the importer. The only settings you need to configure are the Processor settings. Under the Processor settings, select the Islandora Feeds node processor, and save. Then in the Processor Mappings, map the fields in your CSV (or similar) source to fields in your target content type.
 
-Be sure to select the correct Islandora content model (which should be "Islandora Feeds Content Model") and target collection. Also choose whether you want to create the objects during the import or later, and whether you want to delete the nodes. Note that these nodes do not have any relationship to the objects ingested into Fedora after the objects are created - they are only used as the source of the ingest and are not synchronized with the objects after the import. 
+Be sure to select the correct Islandora content model (which should be "Islandora Feeds Content Model") and target collection. Also choose whether you want to create the objects during the import or later, and whether you want to delete the nodes. Note that these nodes do not have any relationship to the objects ingested into Fedora after the objects are created - they are only used as the source of the ingest and are not synchronized with the objects after the import.
 
 You should map one of the fields in your source to Title in your target. The only other columns in your source you need to map are the ones you have defined in your target content type - you do not need to map any of the node properties unless you want to.
 
 Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer.
+
+If you choose to create your Islandora objects at a time after importing the Feeds data (for example, because you want to do some QA on the nodes before creating Islandora objects from them), you can do so by using [Views Bulk Operations](https://drupal.org/project/views_bulk_operations). Create a view listing objects in your content type, and use the "Create Islandora objects from nodes" action. Any changes you make to your nodes before you create your Islandora objects (including uploading of thumbnails) will be reflected in the new objects.
 
 ### Adding thumbnails
 
@@ -61,7 +63,7 @@ If your Drupal nodes have an image field with the machine name 'field_tn', the i
 
 ### Generating an XML Forms definition file and XSD Schema from your content type
 
-If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content typ on this page.
+If you want to create add/edit forms for your objects using the Islandora XML Forms Builder, you can use an auto-generated form definition file. You can do this by going to Structure > [your content type] > edit > Islandora Feeds. Simply copy the form schema into a file (ending in .xml) and upload it into the Form Builder. You can also dowload an XSD  Schema for your content type from this page.
 
 ## Notes
 
@@ -71,9 +73,7 @@ If you want to create add/edit forms for your objects using the Islandora XML Fo
 ## To do
 
 * Provide tutorial on building CRUD forms using the XML Forms Builder.
-* Improve and generalize the theming of the XML when viewed.
-* Add the ability to inspect/edit/etc. nodes before ingesting the objects into Fedora (mostly done; requires [Views Bulk Operations](https://drupal.org/project/views_bulk_operations))
-* Figure out how to import thumbnails and additional datastreams.
+* Improve and generalize the theming of the XML when ingested and viewed.
 
 ## Troubleshooting/issues/feedback
 
