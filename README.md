@@ -71,6 +71,10 @@ If you want to create add/edit forms for your objects using the Islandora XML Fo
 
 The data in the XML datastreams in the objects created by this module is indexed in Solr with no additional configuration. However, there is currently no field-specific search available. Advanced search for these objects would be an awesome addition, if someone wants to take it on.
 
+### Deriving other datastreams from the OBJ datastream
+
+It is possible to derive other XML datastreams from the OJB datastream created by this module. A sample implementation that creates a dead-simple MODS datastream is provided in the 'modules' subdirectory.
+
 ## Notes
 
 * Mapping a source field that is a number to the title won’t work. Islandora defaults to sequential numbering as a label when you attempt it. 
@@ -80,7 +84,6 @@ The data in the XML datastreams in the objects created by this module is indexed
 
 * Provide tutorial on building CRUD forms using the XML Forms Builder.
 * Improve and generalize the theming of the XML when ingested and viewed.
-* Add a sample helper module that implements a derivative hook to create a MODS datastream from the flat XML.
 
 ## Troubleshooting/issues/feedback
 
