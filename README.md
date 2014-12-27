@@ -76,7 +76,7 @@ After you have created your Drupal content type, configure your Feed importer by
 
 #### Processor
 
-Choose Islandora Feeds node processor
+* Choose Islandora Feeds node processor
 * Under Settings, choose:
 ** the Bundle that corresponds to your Drupal content type
 ** your preferred Islandora content model (should be "Islandora Feeds Content Model"), target collection, and namespace
