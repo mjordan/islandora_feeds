@@ -74,12 +74,13 @@ The data in the XML datastreams in the objects created by this module is indexed
 ## Notes
 
 * Mapping a source field that is a number to the title won’t work. Islandora defaults to sequential numbering as a label when you attempt it. 
-* When deleting nodes, the error message suggests you’ve deleted Islandora objects. This is not correct - only the Drupal content is deleted. 
+* When deleting nodes, the error message suggests you’ve deleted Islandora objects. This is not accurate - only the Drupal content is deleted. 
 
 ## To do
 
 * Provide tutorial on building CRUD forms using the XML Forms Builder.
 * Improve and generalize the theming of the XML when ingested and viewed.
+* Add a sample helper module that implements a derivative hook to create a MODS datastream from the flat XML.
 
 ## Troubleshooting/issues/feedback
 
