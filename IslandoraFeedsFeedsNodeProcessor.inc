@@ -114,6 +114,15 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
   public function configForm(&$form_state) {
     $form = parent::configForm($form_state);
 
+    if (module_exists('islandora_feeds_derivs') && variable_get('islandora_feeds_derivs_is_active', 0)) {
+      $link = l('deactivate', 'admin/islandora/tools/feeds/derivs');
+      $source_collection = variable_get('islandora_feeds_derivs_source_collection', '');
+      drupal_set_message(t("This is important! The Islandora Feeds Derivs module is enabled and
+      active, and will perform actions on all items in the @coll collection. If you do not want
+      this to happen, @deactivate the module before running this Feeds import.",
+      array('@coll' => $source_collection, '@deactivate' => $link)), 'warning', FALSE);
+    }
+
     // We currently don't support updates.
     unset($form['update_existing']);
     unset($form['skip_hash_check']);

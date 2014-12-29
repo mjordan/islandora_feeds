@@ -1,7 +1,0 @@
-name = Islandora Feeds MODS
-description = "Sample module illustrating how to create a MODS datastream from the OBJ datastream created by Islandora Feeds."
-dependencies[] = islandora_feeds
-package = Islandora Tools
-version = 7.x-dev
-core = 7.x
-php = 5.3

@@ -120,18 +120,23 @@ function islandora_feeds_theme($existing, $type, $theme, $path) {
 function islandora_feeds_preprocess_islandora_feeds_item_display(array &$variables) {
   $islandora_object = $variables['islandora_object'];
 
-  $xsl_doc = new DOMDocument();
-  $path_to_xsl = drupal_get_path('module', 'islandora_feeds') . '/xml/xml2table.xsl';
-  $xsl_doc->load($path_to_xsl);
+  if (isset($islandora_object['OBJ'])) {
+    $xsl_doc = new DOMDocument();
+    $path_to_xsl = drupal_get_path('module', 'islandora_feeds') . '/xml/xml2table.xsl';
+    $xsl_doc->load($path_to_xsl);
 
-  $xml_doc = new DOMDocument();
-  $xml_doc->loadXML($islandora_object['OBJ']->content);
+    $xml_doc = new DOMDocument();
+    $xml_doc->loadXML($islandora_object['OBJ']->content);
 
-  $xslt_proc = new XSLTProcessor();
-  $xslt_proc->importStylesheet($xsl_doc);
-  $xslt_proc->registerPHPFunctions();
+    $xslt_proc = new XSLTProcessor();
+    $xslt_proc->importStylesheet($xsl_doc);
+    $xslt_proc->registerPHPFunctions();
 
-  $variables['islandora_content'] = $xslt_proc->transformToXML($xml_doc);
+    $variables['islandora_content'] = $xslt_proc->transformToXML($xml_doc);
+  }
+  else {
+    $variables['islandora_content'] = t('There is no OBJ datastream for this object.');
+  }
 }
 
 /**
