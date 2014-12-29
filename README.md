@@ -107,6 +107,8 @@ The data in the XML datastreams in the objects created by this module is indexed
 
 Islandora Feeds only generates flat XML datastreams with the DSID 'OBJ'. However, it is possible to derive other XML datastreams from the OJB datastream created by this module using XSL stylesheets. A helper module called Islandora Feeds Derivs is provided in the 'modules' directory to help you do this.
 
+Generating "other datastreams" means you can import CSV data and turn it into MODS datastreams. In other words, if you have CSV data that describes still images, you can import it using Islandora Feeds, write an XSL stylesheet that transforms the resulting OBJ datastreams into MODS, and configure Islandora Feeds Derivs to create the MODS datastreams. That module has options to delete the OBJ datastream, change the content model (to islandora:sp_basic_image, for example) and share the objects with other collections (such as your collection that contains still images). You will need to upload the images manually, though. This sort of workflow, while containing quite a few steps, may be useful if you want to import CSV data into an existing collection.
+
 ## Notes
 
 * Mapping a source field that is a number to the title won’t work. Islandora defaults to sequential numbering as a label when you attempt it. 
