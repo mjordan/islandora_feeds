@@ -1,4 +1,4 @@
-# Islandora Feeds MODS
+# Islandora Feeds Derivs
 
 ## Requirements
 
@@ -46,7 +46,7 @@ The module can not only generate deriviate XML datastreams from the OBJ, it can:
 
 The admin settings, which are at admin/islandora/tools/feeds/derivs (and which can be accessed from within the admin settings of the Islandora Feeds, if the module is enabled) look like this:
 
-!(Islandora Feeds Derivs)[https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_derivs_admin.png]
+![Islandora Feeds Derivs](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_derivs_admin.png)
 
 To see the module in action, enable it, generate some Islandora objects using Islandora Feeds, look at thoese objects' MODS datastreams, and modify the module to suit your own needs.
 
