@@ -105,7 +105,7 @@ The data in the XML datastreams in the objects created by this module is indexed
 
 ### Deriving other datastreams from the OBJ datastream
 
-Islandora Feeds only generates flat XML datastreams with the DSID 'OBJ'. However, it is possible to derive other XML datastreams from the OJB datastream created by this module using standard Islandora hooks. A sample implementation that creates a dead-simple MODS datastream is provided in the 'modules' subdirectory.
+Islandora Feeds only generates flat XML datastreams with the DSID 'OBJ'. However, it is possible to derive other XML datastreams from the OJB datastream created by this module using XSL stylesheets. A helper module called Islandora Feeds Derivs is provided in the 'modules' directory to help you do this.
 
 ## Notes
 
