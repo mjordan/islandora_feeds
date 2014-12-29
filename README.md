@@ -52,7 +52,7 @@ This module does not have its own configuration form. All configuration is done 
 
 ### Creating objects
 
-First, create a Drupal content type containing the fields that you want to have in your OBJ XML datastreams. The XML element names will correspond to the content type field names minus the "field_" that Drupal adds (for example, a content type field with the machine name "field_my_first_field" will create a ```<my_first_field>``` element in your OBJ datastream). All your fields should be of type 'text' and use the 'textfield' widget.
+First, create a Drupal content type containing the fields that you want to have in your OBJ XML datastreams. The XML element names will correspond to the content type field names minus the "field_" that Drupal adds (for example, a content type field with the machine name "field_my_first_field" will create a ```<my_first_field>``` element in your OBJ datastream). The labels your assign to your fields will be used in the display of the OBJ datastream, as illustrated above. All your fields should be of type 'text' and use the 'textfield' widget.
 
 Note that nodes created during the import do not have any continuing relationship to the objects ingested into Fedora after the objects are created - they are only used as the source of the ingest and are not synchronized with the objects after the import.
 
@@ -105,7 +105,7 @@ The data in the XML datastreams in the objects created by this module is indexed
 
 ### Deriving other datastreams from the OBJ datastream
 
-Islandora Feeds only generates flat XML datastreams (by default with the DSID 'OBJ'). However, it is possible to derive other XML datastreams from the OJB datastream created by this module using standard Islandora hooks. A sample implementation that creates a dead-simple MODS datastream is provided in the 'modules' subdirectory.
+Islandora Feeds only generates flat XML datastreams with the DSID 'OBJ'. However, it is possible to derive other XML datastreams from the OJB datastream created by this module using standard Islandora hooks. A sample implementation that creates a dead-simple MODS datastream is provided in the 'modules' subdirectory.
 
 ## Notes
 
