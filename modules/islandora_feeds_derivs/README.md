@@ -10,7 +10,7 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 
 ## Overview
 
-This module provides a sample implementation for generating a MODS (or other XML) datastream from an OBJ datastream created by the Islandora Feeds module. With some development effort, the Islandora Feeds module will allow the direct generation of MODS and other complex XML datastreams. Until then, enjoy this workaround.
+This module allows generating a MODS (or other XML) datastream from an OBJ datastream created by the Islandora Feeds module.
 
 Given a OBJ datastream like this:
 
@@ -33,11 +33,11 @@ this module creates a MODS datastream like this and adds it to the object:
 <!-- MODS markup that follows titleInfo goes here -->
 ```
 
-Only the `<titleInfo>` fragment is provided in this example because that's the only element in the MODS datastream this module populates.
+(Only the `<titleInfo>` fragment is provided in this example because that's the only element in the MODS datastream this module populates.)
 
 ## Configuration
 
-Once enabled, this module creates a MODS datastream for every object created from Feeds data. You can create other XML datastreams if you can provide an XSL stylesheet that will convert the flat OBJ XML into your target format. All you need to do is drop the stylesheet file into the module's 'xml' directory and it will be detected.
+Once enabled, this module creates one or more XML datastreams for every object created from Feeds data. All you need to do is write an XSL stylesheet to transform the OBJ datastream into your desired derivative. You can create multiple datastreams at once if you provide multiple XSL files.
 
 The module can not only generate deriviate XML datastreams from the OBJ, it can:
 
@@ -48,7 +48,7 @@ The admin settings, which are at admin/islandora/tools/feeds/derivs (and which c
 
 ![Islandora Feeds Derivs](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_derivs_admin.png)
 
-To see the module in action, enable it, generate some Islandora objects using Islandora Feeds, look at thoese objects' MODS datastreams, and modify the module to suit your own needs.
+To see the module in action, enable it, generate some Islandora objects using Islandora Feeds, look at those objects' MODS datastreams, and modify the module to suit your own needs.
 
 ## Usage
 

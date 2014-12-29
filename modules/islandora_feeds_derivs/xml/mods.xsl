@@ -3,6 +3,9 @@
   <!-- Sample XSL stylesheet for creating MODS derivatives from OBJ datastreams created
        by the Islandora Feeds module. -->
 
+  <xsl:param name="DSID">MODS</xsl:param>
+  <xsl:param name="DSLABEL">MODS record</xsl:param>
+
   <xsl:template match="/">
     <mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink">
       <titleInfo>

@@ -51,30 +51,11 @@ function islandora_feeds_derivs_admin_settings() {
     '#required' => TRUE,
   );
 
-  $form['islandora_feeds_derivs_target_dsid'] = array(
-    '#title' => t('Target datastream ID'),
-    '#type' => 'textfield',
-    '#size' => 30,
-    '#default_value' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
-    '#description' => t("DSID of the derivative datastream you are creating."),
-    '#maxlength' => 255,
-    '#required' => TRUE,
-  );
-
-  $form['islandora_feeds_derivs_target_ds_label'] = array(
-    '#title' => t('Target datastream label'),
-    '#type' => 'textfield',
-    '#size' => 30,
-    '#default_value' => variable_get('islandora_feeds_derivs_target_ds_label', 'MODS Record'),
-    '#description' => t("Label of the derivative datastream you are creating."),
-    '#maxlength' => 255,
-    '#required' => TRUE,
-  );
-
   $stylesheets = islandora_feeds_derivs_get_stylesheets();
   $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
   $form['islandora_feeds_derivs_stylesheet'] = array(
     '#type' => 'select',
+    '#multiple' => TRUE,
     '#title' => t('Stylesheet'),
     '#options' => $stylesheets,
     '#description' => t("The stylesheet to convert the OBJ datastream XML into
@@ -96,7 +77,7 @@ function islandora_feeds_derivs_admin_settings() {
   );
 
   $target_collections = $collections;
-  $target_collections['do_not_share_object'] = t('Do not share the objects with another collection.');
+  $target_collections['do_not_share_object'] = t('Do not share the objects with another collection');
   $form['islandora_feeds_derivs_target_collection'] = array(
     '#type' => 'select',
     '#title' => t('Share objects with this collection'),
@@ -130,10 +111,11 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
   $derivatives = array();
   $collections = $object->relationships->get(FEDORA_RELS_EXT_URI, 'isMemberOfCollection');
   if (variable_get('islandora_feeds_derivs_is_active', 0)) {
+    // The object should only be in one collection since it's just been created.
     if ($collections[0]['object']['value'] == $source_collection) {
       $derivatives[] = array(
         'source_dsid' => 'OBJ',
-        'destination_dsid' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
+        // 'destination_dsid' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
         'weight' => '0',
         'function' => array(
           'islandora_feeds_derivs_create_ds',
@@ -164,14 +146,13 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
  * @see hook_islandora_derivative()
  */
 function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = FALSE, $hook = array()) {
-  $target_dsid = variable_get('islandora_feeds_derivs_target_dsid', 'MODS');
-  if ($force || !isset($object[$target_dsid])) {
+  if ($force) {
     if (!isset($object[$hook['source_dsid']])) {
       return array(
         'success' => FALSE,
         'messages' => array(
           array(
-            'message' => t('No @source datastream present for object @pid - MODS creation skipped.'),
+            'message' => t('No @source datastream present for object @pid - derivative XML datastream creation skipped.'),
             'message_sub' => array('@source' => $hook['source_dsid'], '@pid' => $object->id),
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
@@ -181,23 +162,48 @@ function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = FALSE
     }
 
     try {
-      $xsl_doc = new DOMDocument();
       $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
-      $path_to_xsl = $module_dir . '/xml/' . variable_get('islandora_feeds_derivs_stylesheet', '');
-      $xsl_doc->load($path_to_xsl);
-      $xml_doc = new DOMDocument();
-      $xml_doc->loadXML($object['OBJ']->content);
-      $xslt_proc = new XSLTProcessor();
-      $xslt_proc->importStylesheet($xsl_doc);
-      $ds_xml = $xslt_proc->transformToXML($xml_doc);
-      $success = islandora_feeds_derivs_add_datastream($object, $target_dsid, $ds_xml);
+      $stylesheets = variable_get('islandora_feeds_derivs_stylesheet', '');
+      // If only one stylesheet is selected, $path_to_xsl will be a string; if multiple are
+      // selected, it will be an arry with the filename as both the key and value.
+      $stylesheet_files = array();
+      if (is_string($stylesheets)) {
+        $stylesheet_files[$stylesheets] = $stylesheets;
+      }
+      else {
+        $stylesheet_files = $stylesheets;
+      }
+
+      foreach ($stylesheet_files as $stylesheet_file) {
+        $path_to_xsl =  $module_dir . '/xml/' . $stylesheet_file;
+
+        $xsl_doc = new DOMDocument();
+        $xsl_doc->load($path_to_xsl);
+
+        // Parse the <xsl:param> elements (which contain the values for the DSID and DS label)
+        // in the stylesheet and put them in an array for passing on to
+        // islandora_feeds_derivs_add_datastream().
+        $param_elements = $xsl_doc->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Transform', 'param');
+        $xsl_parameters = array();
+        foreach ($param_elements as $element) {
+          $xsl_parameters[$element->getAttribute('name')] = $element->nodeValue;
+          $name = $element->getAttribute('name');
+        }
+
+        $xml_doc = new DOMDocument();
+        $xml_doc->loadXML($object['OBJ']->content);
+        $xslt_proc = new XSLTProcessor();
+        $xslt_proc->importStylesheet($xsl_doc);
+        $ds_xml = $xslt_proc->transformToXML($xml_doc);
+        $success = islandora_feeds_derivs_add_datastream($object, $xsl_parameters, $ds_xml);
+      }
     }
     catch (exception $e) {
       $success = array(
         'success' => FALSE,
         'messages' => array(
           array(
-            'message' => t('Failed to create MODS datastream.'),
+            'message' => t('Failed to create derivative XML datastream.'),
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
           ),
@@ -214,22 +220,22 @@ function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = FALSE
  *
  * @param AbstractObject $object
  *   The object to add the datasteam to.
- * @param string $datastream_id
- *   The datastream id of the added datastream.
- * @param string $file_uri
- *   A URI to the file containing the content for the datastream.
+ * @param array $params
+ *   An associative array containing the DSID and DSLABEL of the datastream to be added.
+ * @param string $xml_string
+ *   The serialized XML to be added as the datastream content.
  *
  * @return array
  *   An array describing the outcome of the datastream addition.
  *
  * @see hook_islandora_derivative()
  */
-function islandora_feeds_derivs_add_datastream($object, $datastream_id, $xml_string) {
+function islandora_feeds_derivs_add_datastream($object, $params, $xml_string) {
   try {
-    $ingest = !isset($object[$datastream_id]);
+    $ingest = !isset($object[$params['DSID']]);
     if ($ingest) {
-      $ds = $object->constructDatastream($datastream_id, 'M');
-      $ds->label = variable_get('islandora_feeds_derivs_target_ds_label', 'MODS Record');
+      $ds = $object->constructDatastream($params['DSID'], 'M');
+      $ds->label = $params['DSLABEL'];
     }
     else {
       $ds = $object[$datastream_id];
@@ -244,7 +250,7 @@ function islandora_feeds_derivs_add_datastream($object, $datastream_id, $xml_str
         array(
           'message' => t('Created @dsid datastream for @pid.'),
           'message_sub' => array(
-            '@dsid' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
+            '@dsid' => $params['DSID'],
             '@pid' => $object->id,
           ),
           'type' => 'dsm',
@@ -259,7 +265,7 @@ function islandora_feeds_derivs_add_datastream($object, $datastream_id, $xml_str
         array(
           'message' => t('Failed to create @dsid datastream for @pid.'),
           'message_sub' => array(
-            '@dsid' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
+            '@dsid' => $params['DSID'],
             '@pid' => $object->id,
           ),
           'type' => 'watchdog',
