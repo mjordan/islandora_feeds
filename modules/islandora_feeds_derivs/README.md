@@ -24,15 +24,13 @@ Given a OBJ datastream like this:
 this module creates a MODS datastream like this and adds it to the object:
 
 ```xml
-<!-- MODS markup that precedes titleInfo goes here -->
+<!-- Your MODS markup that precedes titleInfo goes here -->
 <titleInfo>
   <title>Object's witty title</title>
   <subTitle/>
 </titleInfo>
-<!-- MODS markup that follows titleInfo goes here -->
+<!-- Your MODS markup that follows titleInfo goes here -->
 ```
-
-(Only the '<titleInfo>' fragment is provided in this example because that's the only element in the MODS datastream this module populates.)
 
 ## Configuration
 
