@@ -10,12 +10,13 @@
  *   $content_type string
  *     The content type the schema is based on.
  *   $fields array
- *     A list of all the fields in the content type.
+ *     An associative array of all the fields in the content type, with the keys
+ *     'field_name' and 'field_label'.
  */
 ?>
 <?php print '<?xml version="1.0"?>' . "\n"; ?>
 <definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3">
-      <?php print "<!-- " . trim($documentation) . " -->\n"; ?>
+  <?php print "<!-- " . trim($documentation) . " -->\n"; ?>
   <properties>
     <root_name>fielddata</root_name>
     <schema_uri/>
@@ -80,21 +81,21 @@
         </properties>
         <children/>
       </element>
-      <?php foreach($variables['fields'] as $field): ?>
-        <?php if($field != 'title'): ?>
-      <element name="<?php print $field; ?>">
+      <?php foreach($variables['fields'] as $field => $config): ?>
+      <?php if($field != 'title'): ?>
+      <element name="<?php print $config['field_name']; ?>">
         <properties>
           <type>textarea</type>
           <access>TRUE</access>
           <collapsed>FALSE</collapsed>
           <collapsible>FALSE</collapsible>
-          <description>Field 1.</description>
+          <description></description>
           <disabled>FALSE</disabled>
           <executes_submit_callback>FALSE</executes_submit_callback>
           <multiple>FALSE</multiple>
           <required>FALSE</required>
           <resizable>FALSE</resizable>
-          <title>Field 1</title>
+          <title><?php print $config['field_label']; ?></title>
           <tree>TRUE</tree>
           <actions>
             <create>
@@ -103,10 +104,10 @@
               <schema/>
               <type>element</type>
               <prefix>NULL</prefix>
-              <value><?php print $field; ?></value>
+              <value><?php print $config['field_name']; ?></value>
             </create>
             <read>
-              <path><?php print $field; ?></path>
+              <path><?php print $config['field_name']; ?></path>
               <context>parent</context>
             </read>
             <update>

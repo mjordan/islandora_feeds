@@ -8,8 +8,6 @@
  *     A string describing what software generated the XSD and when.
  *   $content_type string
  *     The content type the schema is based on.
- *   $content_type_camel string
- *     A camelCased version of $content_type.
  *   $fields array
  *     A list of all the fields in the content type.
  */
@@ -22,16 +20,17 @@
   </xsd:annotation>
 
   <!-- The content type's machine name. -->
-  <xsd:element name="<?php print $content_type; ?>" type="<?php print $content_type_cammel; ?>"/>
+  <xsd:element name="<?php print $content_type; ?>" type="<?php print $content_type; ?>"/>
 
   <?php if (count($fields)): ?>
     <!-- Each field in the content type gets an xsd:element. -->
-    <xsd:complexType name="<?php print $content_type_cammel; ?>">
+    <xsd:complexType name="<?php print $content_type; ?>">
       <xsd:sequence>
        <?php foreach ($fields as $field): ?>
-       <xsd:element name="<?php print $field; ?>"   type="xsd:string"/>
+       <xsd:element name="<?php print $field; ?>" type="xsd:string"/>
        <?php endforeach; ?>
       </xsd:sequence>
+       <xs:attribute name="label" type="xsd:string"/>
     </xsd:complexType>
   <?php endif; ?>
 
