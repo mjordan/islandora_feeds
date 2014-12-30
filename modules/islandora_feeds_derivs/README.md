@@ -6,7 +6,7 @@
 
 ## Installation
 
-Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
+Islandora Feeds Derivs is included with Islandora Feeds, but it must be enabled separately.
 
 ## Overview
 
@@ -48,13 +48,18 @@ These last three options are useful if your ultimate goal is to create objects (
 
 ## Usage
 
+Islandora Feeds Derivs creates derivatives of the OBJ datastream at the time that datastream is created. For example, if you create your Islandora objects during the Feeds import, that's when the derivatives are created; if you create your Islandora objects later (using Views Bulk Operations, as descrived in the README for Islandora Feeds), the derivatives are created then.
+
+### An example
+
 Since Islandora Feeds Derivs can create any XML datastream from the flat XML created by Islandora Feeds, you can use it to import MODS datastreams. The XSL stylesheet provided with the module is a good place to start; it only copies the OBJ's 'title' element into the MODS template, but you can modify it, or copy it and create another stylesheet, to suite your specific needs.
 
-A typical workflow for using Islandora Feeds to import data that will end up in MODS datastreams would be:
+A typical workflow for using Islandora Feeds and Islandora Feeds Derivs to import data that will end up in MODS datastreams would be:
 
 1. Create a Drupal content type that has a text field for each element in the MODS records you want to populate (this is required by Islandora Feeds).
-2. Test the content type by importing some data from a CSV file. Once you have imported some test objects, download several of the OBJ datastreams and start writing your stylesheet to use with the Islandora Feeds Derivs module. You can use your favorite XML/XSL authoring tools to do this writing and testing.
+2. Test the content type by importing some data from a CSV file using Islandora Feeds. Once you have imported some test objects, download several of the OBJ datastreams and start writing your stylesheet to use with the Islandora Feeds Derivs module. You can use your favorite XML/XSL authoring tools to do this writing and testing.
 3. When you are satisfied with your offline tests, upload your stylesheet into the Islandora Feeds Derivs /xml directory and configure Islandora Feeds Derivs to use your stylesheet to create MODS datastreams, to set the preferred target collection and content models for your objects, and to delete the OBJ datastream if you want.
+4. Using Islandora Feeds, import your CSV data. During the creation of the corresponding Islandora objects, Islandora Feeds Derivs creates a MODS datastream for each object (and deletes the original OBJ if you have configured it to do so).
 
 ## XSL Stylesheets used by this module
 
