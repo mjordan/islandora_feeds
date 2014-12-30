@@ -101,7 +101,7 @@ Title, Field 1, Field 2, Field 3
 "...", "...", "...", "Second item's field 3 value"
 "...","...", "...", "Field 3's first value; field 3's second value; field3's third value"
 ```
-The resulting OBJ XML looks like this:
+The resulting OBJ XML for the item created from data in the first row of this file will look like this:
 
 ```xml
 <fielddata>
@@ -117,9 +117,9 @@ The resulting OBJ XML looks like this:
 To get this to work, you must do the following:
 
 * Install Feeds Tamper.
-* Configure the field in your Drupal content type that will accept repeated values so that it accepts an "Unlimited" number of values.
-* In your Feeds Importer, click on the Tamper tab and in the list of field mappings, click on "+Add plugin" for the field that will accept repeated values (same one you configured in the previous step).
-* Add the "Explode" Tamper plugin, and in the String Separator field, enter the same character you used to delimit your subvalues in the CSV file.
+* Configure the field in your Drupal content type that will accept repeated values so that it accepts an unlimited number of values.
+* In your Feeds Importer, click on the Tamper tab and in the list of field mappings, and click on "+Add plugin" for the field that will accept repeated values (same one you configured in the previous step).
+* Add the "Explode" Tamper plugin, and in the String Separator field, enter the same character you used to delimit your subvalues in the CSV file (in the example above, a semicolon).
 
 ### Adding thumbnails
 
