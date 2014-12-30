@@ -81,7 +81,7 @@ After you have created your Drupal content type and enabled the Islandora Feeds 
 * Choose Islandora Feeds node processor
 * Under Settings, choose:
   * the Bundle that corresponds to your Drupal content type
-  * the target collection and and namespace
+  * the target collection and namespace
   * Ingest objects (check if you want to ingest your Islandora objects during the Feeds import; uncheck if you want to ingest your objects in a separate step, for example, after you upload thumbnail images to the nodes or perform quality control on the node content)
   * Keep nodes (check if you want to keep the nodes for the reasons mentioned under "Ingest objects", for example; uncheck if you want the nodes to be automatically deleted after the Islandora objects are ingested).
   * Under Author, the Drupal user that will be assigned to be the owner of the Islandora objects.
