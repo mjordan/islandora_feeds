@@ -91,6 +91,36 @@ Once you have configured the importer, you're ready to import your source conten
 
 If you choose to create your Islandora objects at a time after importing the Feeds data (for example, because you want to do some QA on the nodes before creating Islandora objects from them), you can do so by using [Views Bulk Operations](https://drupal.org/project/views_bulk_operations). Create a view listing objects in your content type, and use the "Create Islandora objects from nodes" action. Any changes you make to your nodes before you create your Islandora objects (including uploading of thumbnails) will be reflected in the new objects.
 
+### Importing data containing repeated values
+
+You can import data that contains repeated values, thanks to the [Feeds Tamper](https://www.drupal.org/project/feeds_tamper) contrib module. To do so, prepare your CSV as follows, separating repeated values with a character such as a semicolon:
+
+```
+Title, Field 1, Field 2, Field 3
+"...", "...", "...","Field 3's first value; field 3's second value; and so on"
+"...", "...", "...", "Second item's field 3 value"
+"...","...", "...", "Field 3's first value; field 3's second value; field3's third value"
+```
+The resulting OBJ XML looks like this:
+
+```xml
+<fielddata>
+  <title label="Title">A sample Islandora object</title>
+  <field_1 label="First field">The first field's value</field_1>
+  <field_2 label="Second field">The second field's value</field_2>
+  <field_3 label="Third field">Field 3's first value</field_3>
+  <field_3 label="Third field">field 3's second value</field_3>
+  <field_3 label="Third field">and so on</field_3>
+</fielddata>
+```
+
+To get this to work, you must do the following:
+
+* Install Feeds Tamper.
+* Configure the field in your Drupal content type that will accept repeated values so that it accepts an "Unlimited" number of values.
+* In your Feeds Importer, click on the Tamper tab and in the list of field mappings, click on "+Add plugin" for the field that will accept repeated values (same one you configured in the previous step).
+* Add the "Explode" Tamper plugin, and in the String Separator field, enter the same character you used to delimit your subvalues in the CSV file.
+
 ### Adding thumbnails
 
 If your Drupal nodes have an image field with the machine name 'field_tn', the image in this field (or the first image in the field if it repeatable) will be added to the corresponding Islandora object as a TN datastream. You can add the image to your nodes manually (via the node add/edit form) or in the feed import; if the latter, you will need to upload the images to your Drupal server to a location the feed fetcher can access it (usually the public files directory).

@@ -130,7 +130,6 @@ function islandora_feeds_preprocess_islandora_feeds_item_display(array &$variabl
 
     $xslt_proc = new XSLTProcessor();
     $xslt_proc->importStylesheet($xsl_doc);
-    $xslt_proc->registerPHPFunctions();
 
     $variables['islandora_content'] = $xslt_proc->transformToXML($xml_doc);
   }
@@ -154,7 +153,7 @@ function islandora_feeds_preprocess_islandora_feeds_item_ingest(array &$variable
     if (isset($info['field_name'])) {
       $variables['field_data'][] = array('field_name' => $trimmed_field_name,
         'field_label' => htmlspecialchars($info['label']),
-        'field_value' => htmlspecialchars($node->{$field_name}['und'][0]['value']));
+        'field_value' => $node->{$field_name}['und']);
     }
   }
 }
