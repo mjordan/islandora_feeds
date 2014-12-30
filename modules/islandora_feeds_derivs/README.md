@@ -34,7 +34,7 @@ this module creates a MODS datastream like this and adds it to the object:
 
 ## Configuration
 
-In addition to configuring some settings using the admin settings form at admin/islandora/tools/feeds/derivs, all you need to do to create XML derivatives for objects you are ingesting via Islandora Feeds is to is write an XSL stylesheet to transform the OBJ datastream created by that solution pack into your desired derivative. You can create multiple datastreams at once if you provide multiple XSL files. The admin settings (which are also linked to from within the admin settings of the Islandora Feeds, if the module is enabled) look like this:
+In addition to configuring some settings using the form at admin/islandora/tools/feeds/derivs, all you need to do to create XML derivatives for objects you are ingesting via Islandora Feeds is to is write an XSL stylesheet to transform the OBJ datastream created by that solution pack into your desired derivative. You can create multiple datastreams at once if you provide multiple XSL files. The admin settings (which are also linked to from within the admin settings of the Islandora Feeds, if the module is enabled) look like this:
 
 ![Islandora Feeds Derivs](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_derivs_admin.png)
 
@@ -44,7 +44,7 @@ The module can not only generate deriviate XML datastreams from the OBJ, it can:
 * change the objects' content model on the fly
 * delete the OBJ datastream
 
-These last three options are useful if your ultimate goal is to import CSV data into MODS datastreams in an arbitrary collection, into objects of an arbitrary content model. In other words, if you have CSV data that describes still images, you can import it using Islandora Feeds, write a stylesheet that transforms the resulting OBJ datastreams into MODS, configure Islandora Feeds Derivs to create the MODS datastreams, and to clean up, delete the OBJ datastream, change the content model to islandora:sp_basic_image, and share the objects with the collection that contains still images.
+These last three options are useful if your ultimate goal is to create objects (of any content model, into any  collection) by converting CSV data into MODS datastreams. In other words, if you have CSV data that describes still images, you can import it using Islandora Feeds, write a stylesheet that transforms the resulting OBJ datastreams into MODS, configure Islandora Feeds Derivs to create the MODS datastreams, and to clean up, tell Islandora Feeds Derivs to delete the OBJ datastream, change the content model to islandora:sp_basic_image, and share the objects with the collection that contains still images.
 
 ## Usage
 
@@ -53,7 +53,7 @@ Since Islandora Feeds Derivs can create any XML datastream from the flat XML cre
 A typical workflow for using Islandora Feeds to import data that will end up in MODS datastreams would be:
 
 1. Create a Drupal content type that has a text field for each element in the MODS records you want to populate.
-2. Test the content type by importing some test data from a CSV. Run the resulting OBJ datastreams against a stylesheet (externally, using your favorite XSLT processor) based on the one you are goin to use with the Islandora Feeds Derivs module.
+2. Test the content type by importing some data from a CSV ile. Run the resulting OBJ datastreams against a stylesheet (externally, using your favorite XSLT processor) based on the one you are goin to use with the Islandora Feeds Derivs module.
 3. When you are satisfied with your offline tests, upload your stylesheet into the Islandora Feeds Derivs' /xml directory and configure Islandora Feeds Derivs to use your stylesheet to create MODS datastreams, to delete the OBJ datastream, and to set the preferred target collection and content models for your objects.
 
 ## XSL Stylesheets used by this module
