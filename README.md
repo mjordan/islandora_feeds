@@ -85,7 +85,7 @@ After you have created your Drupal content type and enabled the Islandora Feeds 
   * Ingest objects (check if you want to ingest your Islandora objects during the Feeds import; uncheck if you want to ingest your objects in a separate step, for example, after you upload thumbnail images to the nodes or perform quality control on the node content)
   * Keep nodes (check if you want to keep the nodes for the reasons mentioned under "Ingest objects", for example; uncheck if you want the nodes to be automatically deleted after the Islandora objects are ingested).
   * Under Author, the Drupal user that will be assigned to be the owner of the Islandora objects.
-* Under Mapping, under "Source" enter the column headings in your CSV file, and under "Target" select the field in the Drupal content type where you want the value to be added. Make sure that one of the mappings is defined as unique. You do not need to map any of the node properties unless you want to (they are not used in the Islandora objects.
+* Under Mapping, under "Source" enter the column headings in your CSV file, and under "Target" select the field in the Drupal content type where you want the value to be added. Make sure that one of the mappings is defined as unique. You do not need to map any of the node properties but you may do so if you want their values in your OBJ datastreams.
 
 Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer.
 
@@ -131,7 +131,7 @@ If you want to create add/edit forms for your objects using the Islandora XML Fo
 
 ### Search
 
-The data in the XML datastreams in the objects created by this module is indexed in Solr with no additional configuration. However, there is currently no field-specific search available. Advanced search for these objects would be an awesome addition, if someone wants to take it on.
+The data in the XML datastreams in the objects created by this module is indexed in Solr with no additional configuration. However, currently no field-specific search is available. Advanced search for these objects would be an awesome addition, if someone wants to take it on.
 
 ### Deriving other datastreams from the OBJ datastream
 
