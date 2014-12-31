@@ -69,12 +69,19 @@ function islandora_feeds_derivs_admin_settings() {
 
   $form['islandora_feeds_derivs_delete_obj'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Delete OBJ datastream'),
+    '#title' => t('Delete the OBJ datastream'),
     '#default_value' => variable_get('islandora_feeds_derivs_delete_obj', 0),
     '#description' => t('Check this option if you want to delete the OBJ datastream 
       automatically after the derivate datastream is created. You would only want to do
       this if you were going to convert the imported objects to another content model.
       Note: Only the OBJ datastreams created during the current Feeds import will be deleted.'),
+  );
+
+  $form['islandora_feeds_derivs_replace_obj'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Replace the OBJ datastream with the derivative'),
+    '#default_value' => variable_get('islandora_feeds_derivs_replace_obj', 0),
+    '#description' => t('UNDER DEVELOPMENT. DOES NOT WORK YET.'),
   );
 
   $target_collections = $collections;
@@ -89,7 +96,6 @@ function islandora_feeds_derivs_admin_settings() {
 
   $cmodels = islandora_feeds_get_collections_or_content_models('cmodels');
   $cmodels['do_not_change_cmodel'] = t('Do not change content model');
-  dd($cmodels, "Content models");
   $form['islandora_feeds_derivs_new_cmodel'] = array(
     '#type' => 'select',
     '#title' => t('Change content model to'),
@@ -121,6 +127,7 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
         'function' => array(
           'islandora_feeds_derivs_create_ds',
           'islandora_feeds_derivs_purge_obj',
+          'islandora_feeds_derivs_replace_obj',
           'islandora_feeds_derivs_update_cmodel',
           'islandora_feeds_derivs_add_collection_relationship',
         ),
@@ -132,7 +139,7 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
 }
 
 /**
- * Creates a simple MODS derivative as datastreams for given object.
+ * Creates datastreams for given object.
  *
  * @param AbstractObject $object
  *   The object that will be used to generate/store the derivatives.
@@ -146,84 +153,56 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
  *
  * @see hook_islandora_derivative()
  */
-function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = FALSE, $hook = array()) {
+function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = TRUE, $hook = array()) {
   // We don't check for the existence of the destination DSID because the object will not have it.
-  if ($force) {
-    if (!isset($object[$hook['source_dsid']])) {
-      return array(
-        'success' => FALSE,
-        'messages' => array(
-          array(
-            'message' => t('No @source datastream present for object @pid - derivative XML datastream creation skipped.'),
-            'message_sub' => array('@source' => $hook['source_dsid'], '@pid' => $object->id),
-            'type' => 'watchdog',
-            'severity' => WATCHDOG_ERROR,
-          ),
-        ),
-      );
-    }
-
-    try {
-      $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
-      $stylesheets = variable_get('islandora_feeds_derivs_stylesheet', '');
-      // If only one stylesheet is selected, $path_to_xsl will be a string; if multiple are
-      // selected, it will be an arry with the filename as both the key and value.
-      $stylesheet_files = array();
-      if (is_string($stylesheets)) {
-        $stylesheet_files[$stylesheets] = $stylesheets;
-      }
-      else {
-        $stylesheet_files = $stylesheets;
-      }
-
-      foreach ($stylesheet_files as $stylesheet_file) {
-        $path_to_xsl =  $module_dir . '/xml/' . $stylesheet_file;
-
-        $xsl_doc = new DOMDocument();
-        $xsl_doc->load($path_to_xsl);
-
-        // Parse the <xsl:param> elements (which contain the values for the DSID and DS label)
-        // in the stylesheet and put them in an array for passing on to
-        // islandora_feeds_derivs_add_datastream().
-        $param_elements = $xsl_doc->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Transform', 'param');
-        $xsl_parameters = array();
-        if (count($param_elements)) {
-          foreach ($param_elements as $element) {
-            $xsl_parameters[$element->getAttribute('name')] = $element->nodeValue;
-            $name = $element->getAttribute('name');
-          }
-        }
-        // Supply a default in case there are no <xsl:param> elements in the stylesheet.
-        else {
-            $xsl_parameters = array(
-              'DSID' => 'NONEPROVIDED',
-              'DSLABEL' => 'None provided',
-            );
-        }
-
-        $xml_doc = new DOMDocument();
-        $xml_doc->loadXML($object['OBJ']->content);
-        $xslt_proc = new XSLTProcessor();
-        $xslt_proc->importStylesheet($xsl_doc);
-        $ds_xml = $xslt_proc->transformToXML($xml_doc);
-        $success = islandora_feeds_derivs_add_datastream($object, $xsl_parameters, $ds_xml);
-      }
-    }
-    catch (exception $e) {
-      $success = array(
-        'success' => FALSE,
-        'messages' => array(
-          array(
-            'message' => t('Failed to create derivative XML datastream.'),
-            'type' => 'watchdog',
-            'severity' => WATCHDOG_ERROR,
-          ),
-        ),
-      );
-    }
-
-    return $success;
+  // We also don't check $force since we always want to create the derivative.
+  if (!isset($object[$hook['source_dsid']])) {
+    return array(
+      'success' => FALSE,
+      'messages' => array(
+	array(
+	  'message' => t('No @source datastream present for object @pid - derivative XML datastream creation skipped.'),
+	  'message_sub' => array('@source' => $hook['source_dsid'], '@pid' => $object->id),
+	  'type' => 'watchdog',
+	  'severity' => WATCHDOG_ERROR,
+	),
+      ),
+    );
   }
+
+  try {
+    $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
+    $stylesheets = variable_get('islandora_feeds_derivs_stylesheet', '');
+    foreach ($stylesheets as $k => $v) {
+      $path_to_xsl =  $module_dir . '/xml/' . $v;
+
+      $xsl_doc = new DOMDocument();
+      $xsl_doc->load($path_to_xsl);
+
+      $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
+      
+      $xml_doc = new DOMDocument();
+      $xml_doc->loadXML($object['OBJ']->getContent());
+      $xslt_proc = new XSLTProcessor();
+      $xslt_proc->importStylesheet($xsl_doc);
+      $ds_xml = $xslt_proc->transformToXML($xml_doc);
+      $success = islandora_feeds_derivs_add_datastream($object, $xsl_parameters, $ds_xml);
+    }
+  }
+  catch (exception $e) {
+    $success = array(
+      'success' => FALSE,
+      'messages' => array(
+	array(
+	  'message' => t('Failed to create derivative XML datastream.'),
+	  'type' => 'watchdog',
+	  'severity' => WATCHDOG_ERROR,
+	),
+      ),
+    );
+  }
+
+  return $success;
 }
 
 /**
@@ -241,7 +220,7 @@ function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = FALSE
  *
  * @see hook_islandora_derivative()
  */
-function islandora_feeds_derivs_add_datastream($object, $params, $xml_string) {
+function islandora_feeds_derivs_add_datastream(AbstractObject $object, $params, $xml_string) {
   try {
     $ingest = !isset($object[$params['DSID']]);
     if ($ingest) {
@@ -249,7 +228,8 @@ function islandora_feeds_derivs_add_datastream($object, $params, $xml_string) {
       $ds->label = $params['DSLABEL'];
     }
     else {
-      $ds = $object[$datastream_id];
+      $ds = $object[$params['DSID']];
+      $ds->label = $params['DSLABEL'];
     }
     $ds->setContentFromString($xml_string);
     if ($ingest) {
@@ -335,6 +315,73 @@ function islandora_feeds_derivs_purge_obj(AbstractObject $object, $force = FALSE
     return $success;
   }
 }
+
+
+/**
+ * Replaces the OBJ datastream for the given object with the derivative.
+ *
+ * @param AbstractObject $object
+ *   The object that will be used to generate/store the derivatives.
+ * @param bool $force
+ *   Whether derivative generation is being forced or not.
+ * @param array $hook
+ *   The derivative definition.
+ *
+ * @return array
+ *   An array describing the outcome of the purge operation.
+ *
+ * @see hook_islandora_derivative()
+ */
+function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FALSE, $hook = array()) {
+  $stylesheet = variable_get('islandora_feeds_derivs_stylesheet', '');
+  if (variable_get('islandora_feeds_derivs_replace_obj', 0) && isset($object['OBJ']) && count($stylesheet) == 1) {
+    try {
+      // First, get the derivative DSID from the stylesheet used to create it,
+      // which is the current stylesheet.
+      $stylesheet_keys = array_keys($stylesheet);
+      $module_dir = drupal_get_path('module', 'islandora_feeds_derivs');
+      $path_to_xsl =  $module_dir . '/xml/' . $stylesheet_keys[0];
+      $xsl_doc = new DOMDocument();
+      $xsl_doc->load($path_to_xsl);
+      $xsl_parameters = islandora_feeds_derivs_get_stylesheet_params($xsl_doc);
+      // Then, replace the contents of OBJ with the content of the derivative.
+      $new_dsid = $xsl_parameters['DSID'];
+      $new_ds = islandora_datastream_load($new_dsid, $object);
+      $new_ds_content = $new_ds->getContent();
+      $object['OBJ']->setContentFromString($new_ds_content);
+      // Finally, delete the derivative.
+      $object->purgeDatastream($new_dsid);
+      return array(
+        'success' => TRUE,
+        'messages' => array(
+          array(
+            'message' => t('Replaced OBJ datastream for @pid with content from @ds.'),
+            'message_sub' => array(
+              '@pid' => $object->id,
+              '@ds' => $new_dsid,
+            ),
+            'type' => 'dsm',
+          ),
+        ),
+      );
+    }
+    catch (exception $e) {
+      $success = array(
+        'success' => FALSE,
+        'messages' => array(
+          array(
+            'message' => t('Failed to replace OBJ datastream.'),
+            'type' => 'watchdog',
+            'severity' => WATCHDOG_ERROR,
+          ),
+        ),
+      );
+    }
+
+    return $success;
+  }
+}
+
 
 /**
  * Updates the content model for the given object.
@@ -457,3 +504,33 @@ function islandora_feeds_derivs_get_stylesheets() {
   return $stylesheets;
 }
 
+/**
+ * Get the DSID and datastream label from a stylesheet's <param> elements.
+ *
+ * @param Object $xsl_doc
+ *   A DOM representation of the stylesheet.
+ *
+ * @return array
+ *   Associative array containing the keys DSID and DSLABEL.
+ */
+function islandora_feeds_derivs_get_stylesheet_params($xsl_doc) {
+  // Parse the <xsl:param> elements (which contain the values for the DSID and DS label)
+  // in the stylesheet and put them in an array for passing on to
+  // islandora_feeds_derivs_add_datastream().
+  $param_elements = $xsl_doc->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Transform', 'param');
+  $xsl_parameters = array();
+  if (count($param_elements)) {
+    foreach ($param_elements as $element) {
+      $xsl_parameters[$element->getAttribute('name')] = $element->nodeValue;
+      $name = $element->getAttribute('name');
+    }
+  }
+  // Supply a default in case there are no <xsl:param> elements in the stylesheet.
+  else {
+    $xsl_parameters = array(
+      'DSID' => 'NONEPROVIDED',
+      'DSLABEL' => 'None provided',
+    );
+  }
+  return $xsl_parameters;
+}
