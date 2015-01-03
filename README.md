@@ -10,8 +10,7 @@ This module allows users to create Islandora objects using the Drupal Feeds cont
 
 ## Optional modules
 
-[Feeds Tamper](https://www.drupal.org/project/feeds_tamper)
-[Views Bulk Operations](https://drupal.org/project/views_bulk_operations)
+[Feeds Tamper](https://www.drupal.org/project/feeds_tamper) and [Views Bulk Operations](https://drupal.org/project/views_bulk_operations)
 
 ## Installation
 
