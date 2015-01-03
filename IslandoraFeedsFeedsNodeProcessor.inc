@@ -119,8 +119,8 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       $source_collection = variable_get('islandora_feeds_derivs_source_collection', '');
       drupal_set_message(t("This is important! The Islandora Feeds Derivs module is enabled and
       active, and will perform actions on all items in the @coll collection. If you do not want
-      this to happen, @deactivate the module before running this Feeds import.",
-      array('@coll' => $source_collection, '@deactivate' => $link)), 'warning', FALSE);
+      this to happen, !deactivate the module before running this Feeds import.",
+      array('@coll' => $source_collection, '!deactivate' => $link)), 'warning', FALSE);
     }
 
     // We currently don't support updates.
