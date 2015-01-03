@@ -8,6 +8,11 @@ This module allows users to create Islandora objects using the Drupal Feeds cont
 
 [Feeds](https://drupal.org/project/feeds)
 
+## Optional modules
+
+[Feeds Tamper](https://www.drupal.org/project/feeds_tamper)
+[Views Bulk Operations](https://drupal.org/project/views_bulk_operations)
+
 ## Installation
 
 Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
@@ -149,7 +154,7 @@ Generating "other datastreams" means you can import CSV data and turn it into MO
 * Provide tutorial on building CRUD forms using the XML Forms Builder.
 * Provide more realistic example CSV files (and resulting datastreams).
 * Provide cookbook recipes documenting various options provided by the Derivs module.
-* Improve and generalize the theming of the XML when ingested and viewed.
+* Fielded search on OBJ datastream XML content.
 * Close the issues in the GitHub repo's queue!
 
 ## Troubleshooting/issues/feedback
