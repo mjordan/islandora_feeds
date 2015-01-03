@@ -86,7 +86,20 @@ function islandora_feeds_derivs_admin_settings() {
       one stylesheet is selected. Note that the original OBJ's version history is lost.
       Also note that you will need to override the theming for the display of the new
       OBJ content (specifically, theme('islandora_feeds_item_display',
-      array('islandora_object' => \$object))). Only works when one stylesheet is selected."),
+      array('islandora_object' => \$object)))."),
+  );
+
+  $form['islandora_feeds_derivs_delete_deriv'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Delete the derivative datastream'),
+    '#default_value' => variable_get('islandora_feeds_derivs_delete_deriv', 0),
+    '#description' => t("Check this option if you want to delete the derivative datastream
+      after its content replaces the OBJ's content. STILL UNDER DEVELOPMENT"),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="islandora_feeds_derivs_replace_obj"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   $target_collections = $collections;
@@ -341,7 +354,6 @@ function islandora_feeds_derivs_purge_obj(AbstractObject $object, $force = FALSE
   }
 }
 
-
 /**
  * Replaces the OBJ datastream for the given object with the derivative.
  *
@@ -401,7 +413,9 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
       $object->ingestDatastream($new_obj_ds);
 
       // Delete the derivative.
-      $object->purgeDatastream($derivative_dsid);
+      if (variable_get('islandora_feeds_derivs_delete_deriv', 0)) {
+        // $object->purgeDatastream($derivative_dsid);
+      }
 
       // Not sure why, but if we don't register the fact that we have
       // already processed this object, the Feeds batch goes into a
