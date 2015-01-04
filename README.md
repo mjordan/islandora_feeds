@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This module allows users to create Islandora objects using the Drupal Feeds contrib module.
+This module allows users to create Islandora objects using the Drupal Feeds contrib module. Additional documentation is available on the [wiki](https://github.com/mjordan/islandora_feeds/wiki).
 
 ## Requirements
 
@@ -44,7 +44,7 @@ the module ingests Islandora objects, one per row of the CSV, each with an OBJ d
 ```
 Field labels and values are displayed by default in a vertical table layout, like this:
 
-![Sample display](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_sample_display.png)
+![Sample display](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds/islandora_feeds_sample_display.png)
 
 Islandora Feeds uses a version of the Feeds Node processor to create a node for each item you are importing. Each node then serves as the source of the Islandora object that is created. You have the option of keeping these nodes (for quality assurance) or deleting them immediately after the Islandora object is created. You also have the option of importing the data into nodes but creating the corresponding Islandora objects later, using Views Bulk Operations.
 

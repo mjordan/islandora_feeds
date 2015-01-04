@@ -36,7 +36,7 @@ this module creates a MODS datastream like this and adds it to the object:
 
 In addition to configuring some settings using the form at admin/islandora/tools/feeds/derivs, all you need to do to create XML derivatives for objects you are ingesting via Islandora Feeds is to is write an XSL stylesheet to transform the OBJ datastream created by that solution pack into your desired derivative. You can create multiple datastreams at once if you provide multiple XSL files. The admin settings (which are also linked to from within the admin settings of the Islandora Feeds, if the module is enabled) look like this:
 
-![Islandora Feeds Derivs](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds_derivs_admin.png)
+![Islandora Feeds Derivs](https://dl.dropboxusercontent.com/u/1015702/linked_to/islandora_feeds/islandora_feeds_derivs_admin.png)
 
 Not only can this module generate deriviate XML datastreams from the OBJ, it can:
 
