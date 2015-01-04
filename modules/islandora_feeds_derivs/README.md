@@ -43,7 +43,7 @@ Not only can this module generate deriviate XML datastreams from the OBJ, it can
 * share objects that are imported by Islandora Feeds with specific collections
 * change the objects' content model on the fly
 * delete the OBJ datastream
-* replace the the OBJ datastream with a derivitive datastream
+* replace the OBJ datastream with a derivitive datastream (and optionally delete the derivative datastream)
 
 The first three options are useful if your ultimate goal is to create objects (of any content model, in any  collection) by converting CSV data into MODS datastreams. In other words, if you have CSV data that describes still images, you can import it using Islandora Feeds, write a stylesheet that transforms the resulting OBJ datastreams into MODS, configure Islandora Feeds Derivs to create the MODS datastreams, and to clean up, tell Islandora Feeds Derivs to delete the OBJ datastream, change the content model to islandora:sp_basic_image, and share the objects with the collection that contains still images.
 
