@@ -66,7 +66,7 @@ After you have created your Drupal content type and enabled the Islandora Feeds 
 
 #### Basic settings
 
-* Attach to content type: select the content type you created in the previous paragraph
+* Attach to content type: select "Use standalone form"
 * Periodic import: Off
 * Import on submission: Check this if you want to start a batch import by creating a single node of your content type
 
@@ -91,7 +91,7 @@ After you have created your Drupal content type and enabled the Islandora Feeds 
   * Under Author, the Drupal user that will be assigned to be the owner of the Islandora objects.
 * Under Mapping, under "Source" enter the column headings in your CSV file, and under "Target" select the field in the Drupal content type where you want the value to be added. Make sure that one of the mappings is defined as unique. You do not need to map any of the node properties but you may do so if you want their values in your OBJ datastreams.
 
-Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer.
+Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer. For example, if you chose "Use standalone form" in the "Basic settings" section above, you can import your content by clicking on the "Import" menu item in your site's navigation menu and selecting the Feeds importer you just configured.
 
 If you choose to create your Islandora objects at a time after importing the Feeds data (for example, because you want to do some QA on the nodes before creating Islandora objects from them), you can do so by using [Views Bulk Operations](https://drupal.org/project/views_bulk_operations). Create a view listing objects in your content type, and use the "Create Islandora objects from nodes" action. Any changes you make to your nodes before you create your Islandora objects (including uploading of thumbnails) will be reflected in the new objects.
 
