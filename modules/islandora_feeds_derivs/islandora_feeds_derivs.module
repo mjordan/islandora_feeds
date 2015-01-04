@@ -257,6 +257,7 @@ function islandora_feeds_derivs_create_ds(AbstractObject $object, $force = TRUE,
  * @see hook_islandora_derivative()
  */
 function islandora_feeds_derivs_add_datastream(AbstractObject $object, $params, $xml_string) {
+  if (!in_array($params['DSID'], $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'][$object->id])) {
   try {
     $ingest = !isset($object[$params['DSID']]);
     if ($ingest) {
@@ -272,7 +273,9 @@ function islandora_feeds_derivs_add_datastream(AbstractObject $object, $params, 
     $ds->setContentFromString($xml_string);
     if ($ingest) {
       $object->ingestDatastream($ds);
+      $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'][$object->id][] = $params['DSID'];
     }
+
     return array(
       'success' => TRUE,
       'messages' => array(
@@ -302,6 +305,7 @@ function islandora_feeds_derivs_add_datastream(AbstractObject $object, $params, 
         ),
       ),
     );
+  }
   }
 }
 
@@ -395,7 +399,7 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
     );
   }
   if (count($stylesheet) == 1 && variable_get('islandora_feeds_derivs_replace_obj', 0) &&
-    !in_array($object->id, $_SESSION['islandora_feeds_derivs_replaced_obj']) &&
+    !in_array($object->id, $_SESSION['islandora_feeds_derivs_seen']['obj_replaced']) &&
     isset($object['OBJ']) && isset($object[$xsl_parameters['DSID']])) {
     try {
       // Replace the contents of OBJ with the content of the derivative.
@@ -414,15 +418,13 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
 
       // Delete the derivative.
       if (variable_get('islandora_feeds_derivs_delete_deriv', 0)) {
-        // $object->purgeDatastream($derivative_dsid);
+        if (!in_array($object->id, $_SESSION['islandora_feeds_derivs_seen']['deriv_deleted'])) {
+          $object->purgeDatastream($derivative_dsid);
+          $_SESSION['islandora_feeds_derivs_seen']['deriv_deleted'][] = $object->id;
+        }
       }
 
-      // Not sure why, but if we don't register the fact that we have
-      // already processed this object, the Feeds batch goes into a
-      // loop and attempts to perform this action multiple times. This
-      // session variable is reset in islandora_feeds.module at the start
-      // of each Feeds import.
-      $_SESSION['islandora_feeds_derivs_replaced_obj'][] = $object->id;
+      $_SESSION['islandora_feeds_derivs_seen']['obj_replaced'][] = $object->id;
 
       return array(
         'success' => TRUE,

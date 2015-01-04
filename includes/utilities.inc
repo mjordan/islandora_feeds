@@ -85,6 +85,7 @@ function islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection
     $fedora_object->relationships->add(FEDORA_MODEL_URI, 'hasModel', $cmodel);
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
     $repository->ingestObject($fedora_object);
+    $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'][$fedora_object->id] = array();
   }
   catch (Exception $e) {
     drupal_set_message(t('Error ingesting Islandora object corresponding to node %n (title: %t): %m', array('%n' => $entity->nid, '%t' => $entity->title, '%m' => $e->getMessage())), 'error', FALSE);

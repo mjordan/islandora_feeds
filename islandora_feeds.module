@@ -99,7 +99,9 @@ function islandora_feeds_feeds_plugins() {
  * (in islandora_feeds_derivs.module) on during the current import.
  */
 function islandora_feeds_feeds_before_import(FeedsSource $source) {
-  $_SESSION['islandora_feeds_derivs_replaced_obj'] = array();
+  $_SESSION['islandora_feeds_derivs_seen']['obj_replaced'] = array();
+  $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'] = array();
+  $_SESSION['islandora_feeds_derivs_seen']['deriv_deleted'] = array();
 }
 
 /**
