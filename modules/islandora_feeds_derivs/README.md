@@ -83,7 +83,7 @@ They are standard stylesheets, but they need to include two `<xsl:param>` elemen
   </xsl:template>
 </xsl:stylesheet>
 ```
-If your stylesheet doesn't contain these elements, a default DSID of 'NONEPROVIDED' and a default datastream label of 'None provided' will be used. Also, since the OBJ datastream's XML uses 'fielddata' as its document element, your stylesheet's XPath queries should be relative to that element.
+If your stylesheet doesn't contain these `<xsl:param>` elements (or the elements are there but do not use the expected 'name' attribute values), a default DSID of 'NONEPROVIDED' and a default datastream label of 'None provided' will be used. Also, since the OBJ datastream's XML uses 'fielddata' as its document element, your stylesheet's XPath queries should be relative to that element.
 
 Finally, since your stylesheets need to live inside the Feeds Deriv's /xml directory, alway keep backups so they don't get accidently deleted during upgrade.
 

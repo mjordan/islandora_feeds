@@ -94,14 +94,22 @@ function islandora_feeds_feeds_plugins() {
 /**
  * Implements hook_feeds_before_import().
  *
- * Reinitialize the array that keeps track of which Islandora objects (by
- * PID) we have performed the islandora_feeds_derivs_replace_obj function
- * (in islandora_feeds_derivs.module) on during the current import.
+ * Reinitialize session variables that keep track of which Islandora objects
+ * and their datastreams have been processed by the various derivative-managment
+ * code in islandora_feeds_derivs.module on during the current import. We need
+ * to do this to avoid the Islandora hook_derivative() code from reprocessing
+ * objects (which is desired in most cases, but not the ones presented by Islandora
+ * Feeds or Islandora Feeds Derivs).
  */
 function islandora_feeds_feeds_before_import(FeedsSource $source) {
-  $_SESSION['islandora_feeds_derivs_seen']['obj_replaced'] = array();
-  $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'] = array();
-  $_SESSION['islandora_feeds_derivs_seen']['deriv_deleted'] = array();
+  if (variable_get('islandora_feeds_derivs_is_active', 0)) {
+    // An simple array of PIDs.
+    $_SESSION['islandora_feeds_derivs_seen']['obj_replaced'] = array();
+    // An associative array in the form PID = array(DSID1, DSID2).
+    $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'] = array();
+    // An simple array of PIDs.
+    $_SESSION['islandora_feeds_derivs_seen']['deriv_deleted'] = array();
+  }
 }
 
 /**

@@ -60,8 +60,8 @@ function islandora_feeds_derivs_admin_settings() {
     '#options' => $stylesheets,
     '#description' => t("The stylesheet to convert the OBJ datastream XML into
       the target datastreamm XML. If you select multiple stylesheets, a derivative
-      will be created for each one. The stylesheets must be in the %d directory
-      and have an '.xsl' extension.",
+      will be created for each one. To show up in this list, stylesheets must be
+      in the %d directory and have an '.xsl' extension.",
       array('%d' => $module_dir . '/xml')),
     '#default_value' => variable_get('islandora_feeds_derivs_stylesheet', ''),
     '#required' => TRUE,
@@ -74,7 +74,8 @@ function islandora_feeds_derivs_admin_settings() {
     '#description' => t('Check this option if you want to delete the OBJ datastream 
       automatically after the derivate datastream is created. You would only want to do
       this if you were going to convert the imported objects to another content model.
-      Note: Only the OBJ datastreams created during the current Feeds import will be deleted.'),
+      Note: Only the OBJ datastreams created during the current Feeds import will be
+      deleted.'),
   );
 
   $form['islandora_feeds_derivs_replace_obj'] = array(
@@ -94,7 +95,7 @@ function islandora_feeds_derivs_admin_settings() {
     '#title' => t('Delete the derivative datastream'),
     '#default_value' => variable_get('islandora_feeds_derivs_delete_deriv', 0),
     '#description' => t("Check this option if you want to delete the derivative datastream
-      after its content replaces the OBJ's content. STILL UNDER DEVELOPMENT"),
+      after its content replaces the OBJ datastream's content."),
     '#states' => array(
       'visible' => array(
         ':input[name="islandora_feeds_derivs_replace_obj"]' => array('checked' => TRUE),
@@ -158,7 +159,9 @@ function islandora_feeds_derivs_islandora_feedscmodel_islandora_derivative(Abstr
     if ($collections[0]['object']['value'] == $source_collection) {
       $derivatives[] = array(
         'source_dsid' => 'OBJ',
-        // 'destination_dsid' => variable_get('islandora_feeds_derivs_target_dsid', 'MODS'),
+        // We can't know the DSID at this point since it's determined at runtime, and there
+        // could be more than one selected in the settings form.
+        // 'destination_dsid' => variable_get('islandora_feeds_derivs_target_dsid', ''),
         'weight' => '0',
         'function' => array(
           'islandora_feeds_derivs_create_ds',
@@ -457,7 +460,6 @@ function islandora_feeds_derivs_replace_obj(AbstractObject $object, $force = FAL
   }
 }
 
-
 /**
  * Updates the content model for the given object.
  *
@@ -598,6 +600,14 @@ function islandora_feeds_derivs_get_stylesheet_params($xsl_doc) {
     foreach ($param_elements as $element) {
       $xsl_parameters[$element->getAttribute('name')] = $element->nodeValue;
       $name = $element->getAttribute('name');
+    }
+    // Supply defaults in case there are <xsl:param> elements in the stylesheet but they
+    // are not the right ones.
+    if (!array_key_exists('DSID', $xsl_parameters)) {
+      $xsl_parameters['DSID'] = 'NONEPROVIDED';
+    }
+    if (!array_key_exists('DSLABEL', $xsl_parameters)) {
+      $xsl_parameters['DSLABEL'] = 'None provided';
     }
   }
   // Supply a default in case there are no <xsl:param> elements in the stylesheet.
