@@ -40,6 +40,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
     // Populate properties that are set by node_object_prepare().
     $node->log = 'Created by IslandoraFeedsFeedsNodeProcessor';
     $node->uid = $this->config['author'];
+    $node->status = $this->config['published'];
     return $node;
   }
 
@@ -105,6 +106,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       'expire' => FEEDS_EXPIRE_NEVER,
       'author' => 0,
       'authorize' => TRUE,
+      'published' => TRUE,
     ) + parent::configDefaults();
   }
 
@@ -139,7 +141,6 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#default_value' => $this->config['collection'],
       '#required' => TRUE,
     );
-
     $form['namespace'] = array(
       '#type' => 'textfield',
       '#title' => t('Namespace'),
@@ -147,21 +148,24 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
       '#default_value' => $this->config['namespace'],
       '#required' => TRUE,
     );
-
     $form['ingestobjects'] = array(
       '#type' => 'checkbox',
       '#title' => t('Ingest objects'),
       '#description' => t('Ingest Islandora objects during the import. Uncheck to only create nodes. You can use Views Bulk Operations to ingest the objects separately.'),
       '#default_value' => $this->config['ingestobjects'],
     );
-
     $form['keepnodes'] = array(
       '#type' => 'checkbox',
       '#title' => t('Keep nodes'),
       '#description' => t('Keep the nodes that are created corresponding to the Islandora objects. Uncheck to automatically delete the nodes during the import.'),
       '#default_value' => $this->config['keepnodes'],
     );
-
+    $form['published'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Publish nodes'),
+      '#description' => t('Check this box if you want your nodes to be published, uncheck to be unpublished.'),
+      '#default_value' => $this->config['published'],
+    );
     $author = user_load($this->config['author']);
     $form['author'] = array(
       '#type' => 'textfield',

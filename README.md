@@ -90,7 +90,9 @@ After you have created your Drupal content type and enabled the Islandora Feeds 
   * the target collection and namespace
   * Ingest objects (check if you want to ingest your Islandora objects during the Feeds import; uncheck if you want to ingest your objects in a separate step, for example, after you upload thumbnail images to the nodes or perform quality control on the node content)
   * Keep nodes (check if you want to keep the nodes for the reasons mentioned under "Ingest objects", for example; uncheck if you want the nodes to be automatically deleted after the Islandora objects are ingested).
+  * Choose whether you want the nodes to be published or unpublished.
   * Under Author, the Drupal user that will be assigned to be the owner of the Islandora objects.
+  * Choose whether you want the nodes to "expire" (be deleted) automatically at a certain point in the future.
 * Under Mapping, under "Source" enter the column headings in your CSV file, and under "Target" select the field in the Drupal content type where you want the value to be added. Make sure that one of the mappings is defined as unique. You do not need to map any of the node properties but you may do so if you want their values in your OBJ datastreams.
 
 Once you have configured the importer, you're ready to import your source content like you would using any other Feeds importer. For example, if you chose "Use standalone form" in the "Basic settings" section above, you can import your content by clicking on the "Import" menu item in your site's navigation menu and selecting the Feeds importer you just configured.
