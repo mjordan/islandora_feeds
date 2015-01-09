@@ -59,8 +59,7 @@ function islandora_feeds_get_collections_or_content_models($type) {
  * @return bool
  *   TRUE if the object was successfuly ingested, FALSE if not.
  */
-function islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection, $owner) {
-  // @todo: Add more granular error catching.
+function islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection, $owner, $delete_source_node = FALSE) {
   try {
     $xml_ds = theme('islandora_feeds_item_ingest', array('node' => $entity));
     $tuque = new IslandoraTuque();
@@ -86,6 +85,9 @@ function islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection
     $fedora_object->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', $collection);
     $repository->ingestObject($fedora_object);
     $_SESSION['islandora_feeds_derivs_seen']['deriv_generated'][$fedora_object->id] = array();
+    if ($delete_source_node) {
+      node_delete($entity->nid);
+    }
   }
   catch (Exception $e) {
     drupal_set_message(t('Error ingesting Islandora object corresponding to node %n (title: %t): %m', array('%n' => $entity->nid, '%t' => $entity->title, '%m' => $e->getMessage())), 'error', FALSE);

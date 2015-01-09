@@ -294,6 +294,13 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
     '#autocomplete_path' => 'user/autocomplete',
     '#default_value' => empty($author->name) ? 'anonymous' : check_plain($author->name),
   );
+  $form['delete_source_node'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Delete nodes after creating Islandora objects'),
+    '#default_value' => FALSE,
+    '#description' => t('Check this option if you want to delete the nodes the
+      Islandora objects are created from.'),
+  );
   return $form;
 }
 
@@ -302,7 +309,8 @@ function islandora_feeds_create_islandora_objects_action_form($context) {
  */
 function islandora_feeds_create_islandora_objects_action($object, $context) {
   module_load_include('inc', 'islandora_feeds', 'includes/utilities');
-  islandora_feeds_ingest_object($object, $context['namespace'], $context['cmodel'], $context['collection'], $context['author']);
+  islandora_feeds_ingest_object($object, $context['namespace'], $context['cmodel'],
+    $context['collection'], $context['author'], $context['delete_source_node']);
 }
 
 /**
@@ -315,6 +323,7 @@ function islandora_feeds_create_islandora_objects_action_submit($form, $form_sta
     'collection' => $form_state['values']['collection'],
     'cmodel' => $form_state['values']['cmodel'],
     'author' => $form_state['values']['author'],
+    'delete_source_node' => $form_state['values']['delete_source_node'],
   );
 }
 
