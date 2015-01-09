@@ -22,7 +22,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    */
   protected function entityInfo() {
     $info = parent::entityInfo();
-    $info['label plural'] = t('Islandora objects');
+    $info['label plural'] = t('Islandora object nodes');
     return $info;
   }
 
