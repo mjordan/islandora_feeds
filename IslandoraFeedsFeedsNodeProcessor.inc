@@ -349,6 +349,11 @@ function islandora_feeds_feeds_after_save(FeedsSource $source, $entity, $item, $
   $collection = $processor_config['collection'];
   $owner = $processor_config['author'];
 
+  if (!is_object($owner)) {
+    $user = user_load($owner);
+    $owner = $user->name;
+  }
+
   if ($processor_config['ingestobjects']) {
     module_load_include('inc', 'islandora_feeds', 'includes/utilities');
     islandora_feeds_ingest_object($entity, $namespace, $cmodel, $collection, $owner);
