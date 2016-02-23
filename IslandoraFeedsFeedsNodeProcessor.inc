@@ -82,7 +82,7 @@ class IslandoraFeedsFeedsNodeProcessor extends FeedsProcessor {
    * @todo: Figure out best way to determine age of Islandora objects.
    *   Only applies if we support deletions.
    */
-  public function expire($time = NULL) {
+  public function expire(FeedsSource $source, $time = NULL) {
     return FEEDS_BATCH_COMPLETE;
   }
 
