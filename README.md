@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This module allows users to create Islandora objects using the Drupal Feeds contrib module. Additional documentation is available on the [wiki](https://github.com/mjordan/islandora_feeds/wiki/Cookbook).
+This module allows users to create Islandora objects using the Drupal [Feeds](https://www.drupal.org/project/feeds) contrib module. Additional documentation is available on the [wiki](https://github.com/mjordan/islandora_feeds/wiki/Cookbook).
+
+> Note that people interested in this module should consider using the [Islandora XML Solution Pack](https://github.com/mjordan/islandora_solution_pack_xml). It is both much simpler than this one (which was probably over-engineered in the first place) and offers many more ways of presenting XML content to end users. That said, if integration with Feeds is something you really need, please open an issue and say so.
 
 ## Requirements
 
